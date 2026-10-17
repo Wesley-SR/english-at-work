@@ -1,0 +1,9 @@
+{
+  "name": "English at Work",
+  "short_name": "English at Work",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#101626",
+  "theme_color": "#101626",
+  "lang": "en"
+}
