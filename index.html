@@ -2,26 +2,38 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#12192c"><meta name="description" content="Learn English through everyday work and home conversations.">
+<meta name="theme-color" content="#12192c"><meta name="description" content="Learn English through work and home listening practice.">
 <title>English Practice</title><link rel="manifest" href="./manifest.webmanifest"><link rel="stylesheet" href="./style.css">
 </head>
 <body><main class="app">
 <section id="choose" class="home-screen">
   <small>DAILY ENGLISH PRACTICE</small><h1>What would you like to study?</h1>
-  <p>Choose a context and practise complete English sentences with audio and spaced repetition.</p>
+  <p>Choose a context and practise listening, spelling, and everyday English.</p>
   <div class="context-grid">
     <button class="context-card" data-context="work"><span class="context-icon">💼</span><strong>English at Work</strong><span>Engineering, meetings, troubleshooting and technical discussions</span><em id="work-total"></em></button>
     <button class="context-card" data-context="home"><span class="context-icon">🏡</span><strong>English at Home</strong><span>Cooking, household chores, drinks and everyday conversations</span><em id="home-total"></em></button>
   </div>
 </section>
 <section id="study" hidden>
-<header><div><button id="back" class="back">← All contexts</button><small>DAILY PRACTICE</small><h1 id="heading">English at Work</h1><p>Listen · Understand · Remember</p></div><span id="count">0 due</span></header>
+<header>
+  <div><button id="back" class="back" type="button">← Menu</button><small>LISTEN · WRITE · LEARN</small><h1 id="heading">English at Work</h1><p>Listen first, then reveal the answer.</p></div>
+  <span id="count">0 due</span>
+</header>
 <nav><button id="review" class="active">Due cards</button><button id="all">All vocabulary</button><button id="reset">Reset progress</button></nav>
 <div class="progress"><div id="bar"></div></div><p id="status" aria-live="polite"></p>
-<section id="card" class="flashcard" tabindex="0" role="button" aria-label="Flip card"><small id="language">ENGLISH</small><div id="sentence"></div><p>Tap to flip</p></section>
-<div class="actions"><button id="audio">🔊 Listen</button><button id="flip">Flip ↻</button></div>
-<section id="ratings" hidden><p>How well did you remember it?</p><div class="ratings"><button data-grade="again">Again</button><button data-grade="hard">Hard</button><button data-grade="good">Good</button><button data-grade="easy">Easy</button></div></section>
+<section id="exercise">
+  <div id="card" class="flashcard" aria-live="polite">
+    <small id="language">LISTEN FIRST</small>
+    <div id="hidden-prompt"><div class="headphone-symbol" aria-hidden="true">🎧</div><strong>Can you write what you hear?</strong><p>The English sentence is hidden until you reveal it.</p></div>
+    <div id="answer" hidden><div id="sentence"></div><div id="translation" hidden><small>PORTUGUÊS</small><p id="portuguese"></p></div></div>
+  </div>
+  <div class="listen-row"><button id="audio" class="primary">🔊 Listen to English</button><span>British English if available</span></div>
+  <label class="writing-label" for="typed">Write what you heard <span>(optional)</span></label>
+  <textarea id="typed" rows="3" placeholder="Type the English sentence here..." autocomplete="off" autocapitalize="sentences" spellcheck="false"></textarea>
+  <div class="reveal-buttons"><button id="show-english">👁 Show English sentence</button><button id="show-portuguese">🌐 Show Portuguese translation</button></div>
+  <section id="ratings" hidden><p>How well did you remember it?</p><div class="ratings"><button data-grade="again">Again</button><button data-grade="hard">Hard</button><button data-grade="good">Good</button><button data-grade="easy">Easy</button></div></section>
+</section>
 <div id="empty" hidden><h2>All caught up! 🎉</h2><p>Review all vocabulary or come back when cards are due.</p></div>
 </section>
-<footer>Progress is saved separately for each context in this browser. Pronunciation uses your device's English voice.</footer>
+<footer>Study history is saved separately for Work and Home in this browser. Audio plays only when you press Listen.</footer>
 </main><script type="module" src="./app.js"></script></body></html>
