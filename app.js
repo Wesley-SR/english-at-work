@@ -1,6 +1,6 @@
 import {cards as workCards} from './data.js';
 import {homeCards} from './home-data.js';
-const contexts={work:{name:'English at Work',cards:workCards,key:'english-at-work-progress-v1'},home:{name:'English at Home',cards:homeCards,key:'english-at-home-progress-v1'}};
+const contexts={work:{name:'Work Review',cards:workCards,key:'english-at-work-progress-v1'},home:{name:'Home Review',cards:homeCards,key:'english-at-home-progress-v1'}};
 const DAY=86400000,$=id=>document.getElementById(id);
 let context=null,progress={},queue=[],idx=0,reveal=0,all=false,completed=0;
 function load(){try{return JSON.parse(localStorage.getItem(context.key))||{}}catch{return {}}}
@@ -13,15 +13,15 @@ function build(){stopAudio();queue=context.cards.filter(c=>all||due(c));idx=0;co
 function show(){
   stopAudio();
   const c=queue[idx];
-  $('count').textContent=context.cards.filter(due).length+' due';
+  $('count').textContent=context.cards.filter(due).length+' pending';
   $('review').classList.toggle('active',!all);
   $('all').classList.toggle('active',all);
   $('bar').style.width=(queue.length?100*completed/(completed+queue.length-idx):100)+'%';
   $('exercise').hidden=!c;$('empty').hidden=!!c;
-  if(!c){$('status').textContent='Session complete';return}
+  if(!c){$('status').textContent='No pending items';return}
   reveal=0;
   $('typed').value='';
-  $('language').textContent='LISTEN FIRST';
+  $('language').textContent='AUDIO PROMPT';
   $('hidden-prompt').hidden=false;
   $('answer').hidden=true;
   $('translation').hidden=true;
@@ -30,12 +30,12 @@ function show(){
   $('portuguese').textContent=c.pt;
   $('show-english').disabled=false;
   $('show-portuguese').disabled=false;
-  $('status').textContent='Card '+(idx+1)+' of '+queue.length;
+  $('status').textContent='Item '+(idx+1)+' of '+queue.length;
 }
 function showEnglish(){
   if(!queue[idx])return;
   reveal=Math.max(reveal,1);
-  $('language').textContent='ENGLISH';
+  $('language').textContent='TEXT';
   $('hidden-prompt').hidden=true;
   $('answer').hidden=false;
   $('ratings').hidden=false;
@@ -49,7 +49,7 @@ function showPortuguese(){
 }
 function speak(){
   const c=queue[idx];if(!c)return;
-  if(!('speechSynthesis' in window)){alert('Audio speech is not supported in this browser');return}
+  if(!('speechSynthesis' in window)){alert('Audio playback is unavailable in this browser');return}
   stopAudio();
   const u=new SpeechSynthesisUtterance(c.en);u.lang='en-GB';u.rate=.85;
   const voice=speechSynthesis.getVoices().find(v=>v.lang.toLowerCase()==='en-gb');
@@ -69,7 +69,7 @@ function grade(kind){
   if(idx>=queue.length){queue=[];idx=0}
   show();
 }
-$('work-total').textContent=workCards.length+' phrases';$('home-total').textContent=homeCards.length+' phrases';
+$('work-total').textContent=workCards.length+' items';$('home-total').textContent=homeCards.length+' items';
 document.querySelectorAll('[data-context]').forEach(b=>b.addEventListener('click',()=>choose(b.dataset.context)));
 $('back').addEventListener('click',back);
 $('show-english').addEventListener('click',showEnglish);
@@ -78,4 +78,4 @@ $('audio').addEventListener('click',speak);
 document.querySelectorAll('[data-grade]').forEach(b=>b.addEventListener('click',()=>grade(b.dataset.grade)));
 $('review').addEventListener('click',()=>{all=false;build()});
 $('all').addEventListener('click',()=>{all=true;build()});
-$('reset').addEventListener('click',()=>{if(confirm('Delete review history for '+context.name+'?')){progress={};save();build()}});
+$('reset').addEventListener('click',()=>{if(confirm('Clear local history for '+context.name+'?')){progress={};save();build()}});
