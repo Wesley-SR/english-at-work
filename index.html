@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#12192c"><meta name="description" content="Personal review workspace.">
-<title>Review Panel</title><link rel="manifest" href="./manifest.webmanifest"><link rel="stylesheet" href="./style.css">
+<title>Review Panel</title><link rel="manifest" href="./manifest.webmanifest"><link rel="stylesheet" href="./style.css?v=20261019-2">
 </head>
 <body><main class="app">
 <section id="choose" class="home-screen">
   <small>REVIEW PANEL</small><h1>Collections</h1>
   <p>Select a collection to continue.</p>
   <div class="context-grid">
-    <button class="context-card" data-context="work"><span class="context-icon">▤</span><strong>Work Review</strong><span>Project notes and discussions</span><em id="work-total"></em></button>
-    <button class="context-card" data-context="home"><span class="context-icon">▤</span><strong>Home Review</strong><span>Daily notes and routines</span><em id="home-total"></em></button>
+    <button class="context-card" data-context="work"><span class="context-icon">▤</span><strong>Work</strong><span>Project notes and discussions</span><em id="work-total"></em></button>
+    <button class="context-card" data-context="home"><span class="context-icon">▤</span><strong>Home</strong><span>Daily notes and routines</span><em id="home-total"></em></button>
   </div>
 </section>
 <section id="study" hidden>
 <header>
-  <div><button id="back" class="back" type="button">← Menu</button><small>REVIEW PANEL</small><h1 id="heading">Work Review</h1><p>Item review</p></div>
-  <span id="count">0 due</span>
+  <div><button id="back" class="back" type="button">← Menu</button><small>REVIEW PANEL</small><h1 id="heading">Work</h1></div>
+  <span id="count">0 pending</span>
 </header>
 <nav><button id="review" class="active">Pending</button><button id="all">All items</button><button id="reset">Clear history</button></nav>
 <div class="progress"><div id="bar"></div></div><p id="status" aria-live="polite"></p>
@@ -36,4 +36,4 @@
 <div id="empty" hidden><h2>Up to date</h2><p>No pending items. Select All items to browse.</p></div>
 </section>
 <footer>Progress stored locally. Audio plays on request.</footer>
-</main><script type="module" src="./app.js"></script></body></html>
+</main><script type="module" src="./app.js?v=20261019-2"></script></body></html>
