@@ -69,3 +69,33 @@ button:hover,button:focus-visible{border-color:#8397ad}
 .context-card>span:not(.context-icon){font-size:12px;color:#a9b5c6}
 .context-card em{color:#9eafc1}
 footer{color:#8997a9}
+
+/* Compact, low-contrast heading — desktop and mobile */
+#study header { margin: 8px 0 15px; gap: 10px; align-items: center; }
+#study header > div { min-width: 0; }
+#study .back { margin: 0 0 10px; padding: 7px 12px; font-size: 12px; }
+#study header small { display: block; color: #7b8797; font-size: 9px; letter-spacing: .035em; font-weight: 500; }
+#study header h1, #heading {
+  font-size: 18px;
+  font-weight: 450;
+  color: #a8b3c2;
+  line-height: 1.25;
+  margin: 4px 0 0;
+  letter-spacing: 0;
+}
+#study header p { display: none; }
+#count {
+  background: #252e3a;
+  color: #9faabd;
+  font-size: 11px;
+  font-weight: 400;
+  padding: 6px 9px;
+  border-radius: 8px;
+  border: 1px solid #3a4655;
+}
+@media (max-width: 540px) {
+  #study header { margin: 7px 0 13px; }
+  #study header h1, #heading { font-size: 15px; font-weight: 450; color: #9faaba; }
+  #study header small { font-size: 8px; }
+  #count { font-size: 10px; padding: 5px 8px; }
+}
