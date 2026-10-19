@@ -1,6 +1,6 @@
 import {cards as workCards} from './data.js';
 import {homeCards} from './home-data.js';
-const contexts={work:{name:'Work Review',cards:workCards,key:'english-at-work-progress-v1'},home:{name:'Home Review',cards:homeCards,key:'english-at-home-progress-v1'}};
+const contexts={work:{name:'Work',cards:workCards,key:'english-at-work-progress-v1'},home:{name:'Home',cards:homeCards,key:'english-at-home-progress-v1'}};
 const DAY=86400000,$=id=>document.getElementById(id);
 let context=null,progress={},queue=[],idx=0,reveal=0,all=false,completed=0;
 function load(){try{return JSON.parse(localStorage.getItem(context.key))||{}}catch{return {}}}
