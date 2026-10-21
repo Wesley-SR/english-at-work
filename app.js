@@ -53,7 +53,7 @@ function showPortuguese(){
 const VOICE_KEY='review-panel-voice-choice-v1';
 let voiceChoice='preferred';
 try{voiceChoice=localStorage.getItem(VOICE_KEY)||'preferred'}catch{}
-const maleNamePattern=/\\bmale\\b|\\b(daniel|george|ryan|oliver|arthur|brian|guy|david|james|matthew|alex|thomas|william|andrew|roger|aaron|edward|graham|peter|fred|liam)\\b/i;
+const maleNamePattern=/(?:\bmale\b|male[_-]?\d+|\b(daniel|george|ryan|oliver|arthur|brian|guy|david|james|matthew|alex|thomas|william|andrew|roger|aaron|edward|graham|peter|fred|liam)\b)/i;
 function englishVoice(v){return /^en(?:[-_]|$)/i.test(v.lang)}
 function britishVoice(v){return /^en[-_]GB$/i.test(v.lang)}
 function voiceId(v){return 'voice:'+JSON.stringify([v.voiceURI,v.name,v.lang])}
@@ -64,8 +64,8 @@ function englishVoices(){
   );
 }
 function preferredVoice(voices){
-  return voices.find(v=>britishVoice(v)&&maleNamePattern.test(v.name))
-    ||voices.find(v=>maleNamePattern.test(v.name))
+  return voices.find(v=>britishVoice(v)&&maleNamePattern.test(v.name+' '+v.voiceURI))
+    ||voices.find(v=>maleNamePattern.test(v.name+' '+v.voiceURI))
     ||voices.find(britishVoice)
     ||voices[0]
     ||null;
