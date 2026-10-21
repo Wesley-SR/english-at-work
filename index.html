@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#12192c"><meta name="description" content="Personal review workspace.">
-<title>Review Panel</title><link rel="manifest" href="./manifest.webmanifest"><link rel="stylesheet" href="./style.css?v=20261021-voice">
+<title>Review Panel</title><link rel="manifest" href="./manifest.webmanifest"><link rel="stylesheet" href="./style.css?v=20261021-menu-voice">
 </head>
 <body><main class="app">
 <section id="choose" class="home-screen">
@@ -12,6 +12,14 @@
   <div class="context-grid">
     <button class="context-card" data-context="work"><span class="context-icon">▤</span><strong>Work</strong><span>Project notes and discussions</span><em id="work-total"></em></button>
     <button class="context-card" data-context="home"><span class="context-icon">▤</span><strong>Home</strong><span>Daily notes and routines</span><em id="home-total"></em></button>
+  </div>
+  <div class="voice-settings">
+    <label for="voice-select">Voice</label>
+    <select id="voice-select" aria-label="Audio voice">
+      <option value="preferred">Male-sounding voice (preferred)</option>
+      <option value="default">System default</option>
+    </select>
+    <span id="voice-hint" aria-live="polite">Available voices depend on your browser and device.</span>
   </div>
 </section>
 <section id="study" hidden>
@@ -28,14 +36,7 @@
     <div id="answer" hidden><div id="sentence"></div><div id="translation" hidden><small>TRANSLATION</small><p id="portuguese"></p></div></div>
   </div>
   <div class="listen-row"><button id="audio" class="primary">🔊 Play audio</button><span>Playback on demand</span></div>
-  <div class="voice-settings">
-    <label for="voice-select">Voice</label>
-    <select id="voice-select" aria-label="Audio voice">
-      <option value="preferred">Male-sounding voice (preferred)</option>
-      <option value="default">System default</option>
-    </select>
-    <span id="voice-hint" aria-live="polite">Available voices depend on your browser and device.</span>
-  </div>
+
   <label class="writing-label" for="typed">Notes <span>(optional)</span></label>
   <textarea id="typed" rows="3" placeholder="Type your response here..." autocomplete="off" autocapitalize="sentences" spellcheck="false"></textarea>
   <div class="reveal-buttons"><button id="show-english">Show text</button><button id="show-portuguese">Show translation</button></div>
@@ -44,4 +45,4 @@
 <div id="empty" hidden><h2>Up to date</h2><p>No pending items. Select All items to browse.</p></div>
 </section>
 <footer>Progress stored locally. Audio plays on request.</footer>
-</main><script type="module" src="./app.js?v=20261021-voice"></script></body></html>
+</main><script type="module" src="./app.js?v=20261021-menu-voice"></script></body></html>
