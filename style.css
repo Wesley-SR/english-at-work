@@ -99,3 +99,37 @@ footer{color:#8997a9}
   #study header small { font-size: 8px; }
   #count { font-size: 10px; padding: 5px 8px; }
 }
+
+/* Compact voice preference control, consistent with discreet interface */
+.voice-settings {
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:8px 10px;
+  margin:-9px 0 20px;
+  padding:0 1px;
+}
+.voice-settings label {font-size:12px;color:#a5b0c0;}
+.voice-settings select{
+  min-width:185px;
+  max-width:100%;
+  flex:1 1 200px;
+  background:#252e3c;
+  border:1px solid #485263;
+  border-radius:8px;
+  color:#d8e0ec;
+  padding:9px 10px;
+  font:inherit;
+  font-size:12px;
+}
+.voice-settings select:focus-visible{outline:2px solid #8397ad;}
+.voice-settings #voice-hint{
+  flex:1 0 100%;
+  font-size:11px;
+  color:#8e9cad;
+  line-height:1.35;
+}
+@media(max-width:540px){
+  .voice-settings{gap:6px 8px;margin-top:-8px;}
+  .voice-settings select{flex:1 1 180px;}
+}
