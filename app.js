@@ -6,7 +6,16 @@ let context=null,progress={},queue=[],idx=0,reveal=0,all=false,completed=0;
 function load(){try{return JSON.parse(localStorage.getItem(context.key))||{}}catch{return {}}}
 function save(){try{localStorage.setItem(context.key,JSON.stringify(progress))}catch(e){console.warn('Local storage unavailable',e)}}
 function due(card){return !progress[card.id]||progress[card.id].due<=Date.now()}
-function stopAudio(){if('speechSynthesis' in window)speechSynthesis.cancel()}
+let recordedAudio=null;
+function stopAudio(){
+  if(recordedAudio){
+    recordedAudio.pause();
+    recordedAudio.removeAttribute('src');
+    recordedAudio.load();
+    recordedAudio=null;
+  }
+  if('speechSynthesis' in window)speechSynthesis.cancel();
+}
 function choose(which){context=contexts[which];if(!context)return;progress=load();all=false;$('choose').hidden=true;$('study').hidden=false;$('heading').textContent=context.name;build()}
 function back(){stopAudio();$('study').hidden=true;$('choose').hidden=false;context=null}
 function build(){stopAudio();queue=context.cards.filter(c=>all||due(c));idx=0;completed=0;show()}
@@ -47,74 +56,63 @@ function showPortuguese(){
   $('translation').hidden=false;
   $('show-portuguese').disabled=true;
 }
-// Browsers expose voice names and languages, but no reliable gender property.
-// Prefer an installed masculine-sounding British voice where its name is recognizable.
-// Users can always override the choice from the selector below.
-const VOICE_KEY='review-panel-voice-choice-v1';
-let voiceChoice='preferred';
-try{voiceChoice=localStorage.getItem(VOICE_KEY)||'preferred'}catch{}
-const maleNamePattern=/(?:\bmale\b|male[_-]?\d+|\b(daniel|george|ryan|oliver|arthur|brian|guy|david|james|matthew|alex|thomas|william|andrew|roger|aaron|edward|graham|peter|fred|liam)\b)/i;
-function englishVoice(v){return /^en(?:[-_]|$)/i.test(v.lang)}
-function britishVoice(v){return /^en[-_]GB$/i.test(v.lang)}
-function voiceId(v){return 'voice:'+JSON.stringify([v.voiceURI,v.name,v.lang])}
-function englishVoices(){
-  if(!('speechSynthesis' in window))return [];
-  return speechSynthesis.getVoices().filter(englishVoice).sort((a,b)=>
-    Number(britishVoice(b))-Number(britishVoice(a))||a.name.localeCompare(b.name)
-  );
-}
-function preferredVoice(voices){
-  return voices.find(v=>britishVoice(v)&&maleNamePattern.test(v.name+' '+v.voiceURI))
-    ||voices.find(v=>maleNamePattern.test(v.name+' '+v.voiceURI))
-    ||voices.find(britishVoice)
-    ||voices[0]
-    ||null;
-}
+// Default to real, pre-generated male British MP3s, not device TTS.
+const VOICE_KEY='review-panel-recorded-voice-v2';
+const VOICE_CHOICES={
+  ryan:'Ryan — British male',
+  thomas:'Thomas — British male',
+  device:'Device voice (may vary)'
+};
+let voiceChoice='ryan';
+try{
+  const stored=localStorage.getItem(VOICE_KEY);
+  if(stored in VOICE_CHOICES)voiceChoice=stored;
+}catch{}
 function updateVoiceOptions(){
   const select=$('voice-select'),hint=$('voice-hint');
-  if(!('speechSynthesis' in window)){
-    select.disabled=true;hint.textContent='Audio voices are not available in this browser.';return;
-  }
-  const voices=englishVoices();
   select.replaceChildren();
-  for(const [value,label] of [['preferred','Prefer male-sounding English'],['default','System default']]){
-    const opt=document.createElement('option');opt.value=value;opt.textContent=label;select.appendChild(opt);
+  for(const [value,label] of Object.entries(VOICE_CHOICES)){
+    const option=document.createElement('option');
+    option.value=value;option.textContent=label;
+    select.appendChild(option);
   }
-  for(const v of voices){
-    const opt=document.createElement('option');opt.value=voiceId(v);
-    opt.textContent=v.name+' ('+v.lang+')';
-    select.appendChild(opt);
+  select.value=voiceChoice;
+  hint.textContent=voiceChoice==='device'
+    ? 'Uses your browser voices; the voice may be female.'
+    : 'British male recording. No device voice installation required.';
+}
+function speakDevice(sentence){
+  if(!('speechSynthesis' in window)){
+    alert('Your browser does not support device speech. Choose Ryan or Thomas in the menu.');
+    return;
   }
-  const found=[...select.options].some(o=>o.value===voiceChoice);
-  select.value=found?voiceChoice:'preferred';
-  if(!voices.length){
-    hint.textContent='Loading installed English voices, if available.';
-  }else if(!found){
-    hint.textContent='Your saved voice is unavailable on this device. Using an available voice.';
-  }else if(voiceChoice==='preferred'){
-    const best=preferredVoice(voices);
-    hint.textContent=best?'Preferred: '+best.name+' ('+best.lang+').':'Using the browser voice.';
-  }else if(voiceChoice==='default'){
-    hint.textContent='Using your browser or device default voice.';
-  }else{
-    hint.textContent='Selected voice will be used for playback.';
-  }
+  const utterance=new SpeechSynthesisUtterance(sentence);
+  utterance.lang='en-GB';utterance.rate=.85;
+  const voice=speechSynthesis.getVoices().find(v=>v.lang.toLowerCase()==='en-gb');
+  if(voice)utterance.voice=voice;
+  speechSynthesis.speak(utterance);
 }
 function speak(){
-  const c=queue[idx];if(!c)return;
-  if(!('speechSynthesis' in window)){alert('Audio playback is unavailable in this browser');return}
+  const card=queue[idx];if(!card)return;
   stopAudio();
-  const voices=englishVoices(),u=new SpeechSynthesisUtterance(c.en);
-  u.lang='en-GB';u.rate=.85;u.pitch=1;
-  const manual=voices.find(v=>voiceId(v)===voiceChoice);
-  if(voiceChoice!=='default'){
-    const selected=manual||(voiceChoice==='preferred'?preferredVoice(voices):preferredVoice(voices));
-    if(selected){u.voice=selected;u.lang=selected.lang}
-    // Subtle pitch adjustment only in automatic mode; not a gender conversion.
-    if(voiceChoice==='preferred')u.pitch=.95;
+  if(voiceChoice==='device'){
+    speakDevice(card.en);
+    return;
   }
-  speechSynthesis.speak(u);
+  const collection=context===contexts.work?'work':'home';
+  const path='./audio/'+voiceChoice+'/'+collection+'/'+card.id+'.mp3';
+  const player=new Audio(path);
+  recordedAudio=player;
+  const fail=()=>{
+    if(recordedAudio!==player)return;
+    recordedAudio=null;
+    alert('The male voice recording could not be loaded. Check your connection or select another voice in Menu.');
+  };
+  player.addEventListener('error',fail,{once:true});
+  player.addEventListener('ended',()=>{if(recordedAudio===player)recordedAudio=null},{once:true});
+  player.play().catch(fail);
 }
+
 function grade(kind){
   const c=queue[idx];if(!c||reveal<1)return;
   const old=progress[c.id]||{interval:0};
@@ -140,10 +138,6 @@ $('voice-select').addEventListener('change',event=>{
   updateVoiceOptions();
 });
 updateVoiceOptions();
-if('speechSynthesis' in window){
-  if(typeof speechSynthesis.addEventListener==='function')speechSynthesis.addEventListener('voiceschanged',updateVoiceOptions);
-  else speechSynthesis.onvoiceschanged=updateVoiceOptions;
-}
 document.querySelectorAll('[data-grade]').forEach(b=>b.addEventListener('click',()=>grade(b.dataset.grade)));
 $('review').addEventListener('click',()=>{all=false;build()});
 $('all').addEventListener('click',()=>{all=true;build()});
