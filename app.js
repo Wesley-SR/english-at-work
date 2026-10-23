@@ -1,4 +1,4 @@
-import {cards as workCards} from './data.js';
+import {cards as workCards} from './data.js?v=20261023-48';
 import {homeCards} from './home-data.js';
 const contexts={work:{name:'Work',cards:workCards,key:'english-at-work-progress-v1'},home:{name:'Home',cards:homeCards,key:'english-at-home-progress-v1'}};
 const DAY=86400000,$=id=>document.getElementById(id);
