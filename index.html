@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#12192c"><meta name="description" content="Personal review workspace.">
-<title>Review Panel</title><link rel="manifest" href="./manifest.webmanifest"><link rel="stylesheet" href="./style.css?v=20261021-male-clips">
+<title>Review Panel</title><link rel="manifest" href="./manifest.webmanifest"><link rel="stylesheet" href="./style.css?v=20261102-speaking-free">
 </head>
 <body><main class="app">
 <section id="choose" class="home-screen">
@@ -37,6 +37,26 @@
     <div id="answer" hidden><div id="sentence"></div><div id="translation" hidden><small>TRANSLATION</small><p id="portuguese"></p></div></div>
   </div>
   <div class="listen-row"><button id="audio" class="primary">🔊 Play audio</button><span>Playback on demand</span></div>
+  <section id="speaking-practice" class="speaking-practice" aria-labelledby="speaking-heading">
+    <div class="speaking-top">
+      <div>
+        <h2 id="speaking-heading">Speaking practice</h2>
+        <p>Speak the sentence and compare the words recognized.</p>
+      </div>
+      <button id="speak-button" type="button" aria-pressed="false">🎙 Speak</button>
+    </div>
+    <p id="speak-support" class="speaking-note">Speech recognition may use your browser provider's online service. Only start if you agree; don't speak confidential information. No recording or transcript is stored by this app.</p>
+    <div id="speak-feedback" class="speaking-feedback" hidden>
+      <p id="speak-status" role="status" aria-live="polite"></p>
+      <p id="speak-preview" class="speaking-transcript" hidden></p>
+      <div id="speak-analysis" hidden>
+        <p id="speak-match" class="speaking-match"></p>
+        <div class="speaking-detail"><span>Words to review</span><p id="speak-missing"></p></div>
+        <div class="speaking-detail"><span>Other words recognized</span><p id="speak-unexpected"></p></div>
+        <p class="speaking-note">This checks recognized text, not individual sounds, stress or accent. Recognition can make mistakes.</p>
+      </div>
+    </div>
+  </section>
 
   <label class="writing-label" for="typed">Notes <span>(optional)</span></label>
   <textarea id="typed" rows="3" placeholder="Type your response here..." autocomplete="off" autocapitalize="sentences" spellcheck="false"></textarea>
@@ -46,4 +66,4 @@
 <div id="empty" hidden><h2>Up to date</h2><p>No pending items. Select All items to browse.</p></div>
 </section>
 <footer>Progress stored locally. Audio plays on request.</footer>
-</main><script type="module" src="./app.js?v=20261102-59"></script></body></html>
+</main><script type="module" src="./app.js?v=20261102-speaking-free"></script></body></html>
