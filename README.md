@@ -13,6 +13,7 @@ The **Speak** button next to the audio player launches your browser's speech rec
 - Unavailable speech recognition disables the control and explains browser support.
 - Correct English text is revealed after the speaking attempt, but rating remains your decision.
 - Changing cards, leaving a collection, or playing another audio clip stops active recognition.
+- **Clear history requires two deliberate confirmations**: accept the first warning and type the exact word `CLEAR` in the second dialog. Canceling either step keeps all saved progress.
 - The analysis is **not a phonetic pronunciation assessment**. Text recognition can succeed despite pronunciation issues, or fail due to accents, noise, and browser errors.
 
 ### Privacy
@@ -38,6 +39,10 @@ node --test tests/speaking.test.mjs
 ```
 
 Unit tests cover punctuation, contractions, substitutions, omitted words and empty results. Speech-recognition behavior depends on the user's browser/device, so it also needs a manual microphone test.
+
+### Keeping your review history safe
+
+The existing Work and Home progress keys remain unchanged. The app does not clear, migrate, or overwrite prior reviews when a feature is updated or merged. Review progress is still stored in your **current browser's localStorage**, not in GitHub: changing devices/browsers or clearing browser site data can lose the data. The destructive Clear history action is deliberately guarded by two confirmations.
 
 ## GitHub Pages and release
 
