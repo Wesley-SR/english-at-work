@@ -7,7 +7,9 @@ on:
   pull_request:
     paths:
       - 'speaking.mjs'
+      - 'history-guard.mjs'
       - 'tests/speaking.test.mjs'
+      - 'tests/history-guard.test.mjs'
       - 'app.js'
       - 'index.html'
       - 'style.css'
@@ -22,7 +24,10 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
-      - name: Test word alignment and contractions
-        run: node --test tests/speaking.test.mjs
+      - name: Test speaking comparison and history protection
+        run: node --test tests/*.test.mjs
       - name: Check browser module syntax
-        run: node --check speaking.mjs
+        run: |
+          node --check speaking.mjs
+          node --check history-guard.mjs
+          node --check app.js
