@@ -1,5 +1,6 @@
 import {cards as workCards} from './data.js?v=20261102-59';
 import {homeCards} from './home-data.js';
+import {compareSpeech} from './speaking.mjs?v=20261102-speaking-free';
 const contexts={work:{name:'Work',cards:workCards,key:'english-at-work-progress-v1'},home:{name:'Home',cards:homeCards,key:'english-at-home-progress-v1'}};
 const DAY=86400000,$=id=>document.getElementById(id);
 let context=null,progress={},queue=[],idx=0,reveal=0,all=false,completed=0;
@@ -17,10 +18,12 @@ function stopAudio(){
   if('speechSynthesis' in window)speechSynthesis.cancel();
 }
 function choose(which){context=contexts[which];if(!context)return;progress=load();all=false;$('choose').hidden=true;$('study').hidden=false;$('heading').textContent=context.name;build()}
-function back(){stopAudio();$('study').hidden=true;$('choose').hidden=false;context=null}
+function back(){stopAudio();stopRecognition();resetSpeaking();$('study').hidden=true;$('choose').hidden=false;context=null}
 function build(){stopAudio();queue=context.cards.filter(c=>all||due(c));idx=0;completed=0;show()}
 function show(){
   stopAudio();
+  stopRecognition();
+  resetSpeaking();
   const c=queue[idx];
   $('count').textContent=context.cards.filter(due).length+' pending';
   $('review').classList.toggle('active',!all);
@@ -94,6 +97,7 @@ function speakDevice(sentence){
 }
 function speak(){
   const card=queue[idx];if(!card)return;
+  stopRecognition();
   stopAudio();
   if(voiceChoice==='device'){
     speakDevice(card.en);
@@ -112,6 +116,161 @@ function speak(){
   player.addEventListener('ended',()=>{if(recordedAudio===player)recordedAudio=null},{once:true});
   player.play().catch(fail);
 }
+
+// Free speaking practice: the browser may use a cloud speech recognition service.
+// This compares the transcript to the card; it cannot assess individual phonemes.
+const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+let activeRecognition = null;
+let receivedSpeech = false;
+let recognitionError = false;
+
+function setSpeakingButton(listening) {
+  const button = $('speak-button');
+  button.textContent = listening ? '■ Stop' : '🎙 Speak';
+  button.setAttribute('aria-pressed', String(listening));
+  button.disabled = !SpeechRecognitionAPI;
+}
+
+function setSpeakingStatus(message) {
+  $('speak-feedback').hidden = false;
+  $('speak-status').textContent = message;
+}
+
+function resetSpeaking() {
+  $('speak-feedback').hidden = true;
+  $('speak-status').textContent = '';
+  $('speak-preview').hidden = true;
+  $('speak-preview').textContent = '';
+  $('speak-analysis').hidden = true;
+  $('speak-match').textContent = '';
+  $('speak-missing').replaceChildren();
+  $('speak-unexpected').replaceChildren();
+  setSpeakingButton(false);
+}
+
+function stopRecognition() {
+  const previous = activeRecognition;
+  activeRecognition = null;
+  if (previous) {
+    // Detach logically first: aborted sessions must not update the next card.
+    try { previous.abort(); } catch (error) { console.warn('Recognition stop failed', error); }
+  }
+  setSpeakingButton(false);
+}
+
+function showWordList(id, words) {
+  const target = $(id);
+  target.replaceChildren();
+  if (!words.length) {
+    target.textContent = 'None';
+    return;
+  }
+  for (const word of words) {
+    const chip = document.createElement('span');
+    chip.className = 'speaking-word';
+    chip.textContent = word; // Transcript is always inserted as plain text.
+    target.appendChild(chip);
+  }
+}
+
+function showTranscript(transcript) {
+  const card = queue[idx];
+  if (!card || !transcript.trim()) return;
+  receivedSpeech = true;
+  const analysis = compareSpeech(card.en, transcript);
+  $('speak-preview').hidden = false;
+  $('speak-preview').textContent = 'Heard: ' + transcript;
+  $('speak-analysis').hidden = false;
+  $('speak-match').textContent =
+    'Text match: ' + analysis.textMatch + '% · ' +
+    analysis.matched + ' of ' + analysis.expectedCount + ' expected words matched';
+  showWordList('speak-missing', analysis.missing);
+  showWordList('speak-unexpected', analysis.unexpected);
+  setSpeakingStatus(analysis.textMatch === 100
+    ? 'All words matched in the transcript.'
+    : 'Check the words below. Automatic recognition can make mistakes.');
+  // Preserve audio-first learning until the speaking attempt is complete.
+  showEnglish();
+}
+
+function startRecognition() {
+  if (!SpeechRecognitionAPI || !queue[idx]) return;
+  if (activeRecognition) {
+    setSpeakingStatus('Finishing your recording…');
+    $('speak-button').disabled = true;
+    try { activeRecognition.stop(); }
+    catch { stopRecognition(); setSpeakingStatus('Recording stopped.'); }
+    return;
+  }
+
+  stopAudio();
+  resetSpeaking();
+  receivedSpeech = false;
+  recognitionError = false;
+  const recognition = new SpeechRecognitionAPI();
+  recognition.lang = 'en-GB';
+  recognition.continuous = false;
+  recognition.interimResults = true;
+  recognition.maxAlternatives = 1;
+  activeRecognition = recognition;
+  setSpeakingButton(true);
+  setSpeakingStatus('Starting microphone…');
+
+  recognition.onstart = () => {
+    if (activeRecognition !== recognition) return;
+    setSpeakingStatus('Listening… Speak the full sentence.');
+  };
+  recognition.onresult = event => {
+    if (activeRecognition !== recognition) return;
+    let finalText = '', interimText = '';
+    for (let i = 0; i < event.results.length; i++) {
+      const segment = event.results[i][0]?.transcript || '';
+      if (event.results[i].isFinal) finalText += ' ' + segment;
+      else interimText += ' ' + segment;
+    }
+    if (finalText.trim()) {
+      showTranscript(finalText.trim());
+    } else if (interimText.trim() && !receivedSpeech) {
+      $('speak-preview').hidden = false;
+      $('speak-preview').textContent = 'Hearing: ' + interimText.trim();
+    }
+  };
+  recognition.onerror = event => {
+    if (activeRecognition !== recognition) return;
+    recognitionError = true;
+    const messages = {
+      'not-allowed': 'Microphone permission denied. Allow microphone access in your browser settings.',
+      'service-not-allowed': 'Speech recognition is blocked by your browser or device.',
+      'audio-capture': 'No microphone found. Check the microphone connection.',
+      'no-speech': 'No speech detected. Try again in a quieter place.',
+      'network': 'Speech recognition needs a network connection in this browser.',
+      'language-not-supported': 'British English recognition is not available on this device.',
+      'aborted': 'Listening stopped.'
+    };
+    setSpeakingStatus(messages[event.error] || 'Speech recognition failed. Please try again.');
+  };
+  recognition.onend = () => {
+    if (activeRecognition !== recognition) return;
+    activeRecognition = null;
+    setSpeakingButton(false);
+    if (!receivedSpeech && !recognitionError) {
+      setSpeakingStatus('No final transcription received. Try speaking again.');
+    }
+  };
+  try {
+    recognition.start(); // User-click only; browser controls permission prompt.
+  } catch {
+    if (activeRecognition === recognition) activeRecognition = null;
+    setSpeakingButton(false);
+    setSpeakingStatus('Could not start recognition. Please check microphone permissions.');
+  }
+}
+
+if (!SpeechRecognitionAPI) {
+  $('speak-support').textContent = 'Speech recognition is not supported in this browser. Try Chrome or Edge. No microphone access was requested.';
+}
+setSpeakingButton(false);
+$('speak-button').addEventListener('click', startRecognition);
 
 function grade(kind){
   const c=queue[idx];if(!c||reveal<1)return;
