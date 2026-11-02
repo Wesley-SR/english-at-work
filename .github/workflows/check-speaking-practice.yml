@@ -1,0 +1,28 @@
+name: Check speaking practice
+
+on:
+  push:
+    branches:
+      - feature/speaking-practice-free
+  pull_request:
+    paths:
+      - 'speaking.mjs'
+      - 'tests/speaking.test.mjs'
+      - 'app.js'
+      - 'index.html'
+      - 'style.css'
+      - '.github/workflows/check-speaking-practice.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test word alignment and contractions
+        run: node --test tests/speaking.test.mjs
+      - name: Check browser module syntax
+        run: node --check speaking.mjs
