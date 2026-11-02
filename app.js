@@ -1,6 +1,7 @@
 import {cards as workCards} from './data.js?v=20261102-59';
 import {homeCards} from './home-data.js';
 import {compareSpeech} from './speaking.mjs?v=20261102-speaking-free';
+import {confirmHistoryClear} from './history-guard.mjs?v=20261102-history-guard';
 const contexts={work:{name:'Work',cards:workCards,key:'english-at-work-progress-v1'},home:{name:'Home',cards:homeCards,key:'english-at-home-progress-v1'}};
 const DAY=86400000,$=id=>document.getElementById(id);
 let context=null,progress={},queue=[],idx=0,reveal=0,all=false,completed=0;
@@ -300,4 +301,10 @@ updateVoiceOptions();
 document.querySelectorAll('[data-grade]').forEach(b=>b.addEventListener('click',()=>grade(b.dataset.grade)));
 $('review').addEventListener('click',()=>{all=false;build()});
 $('all').addEventListener('click',()=>{all=true;build()});
-$('reset').addEventListener('click',()=>{if(confirm('Clear local history for '+context.name+'?')){progress={};save();build()}});
+$('reset').addEventListener('click',()=>{
+  if (!context || !confirmHistoryClear(context.name, window)) return;
+  // This key is written only after both confirmations, never during updates.
+  progress = {};
+  save();
+  build();
+});
