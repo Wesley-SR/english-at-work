@@ -238,5 +238,60 @@ export const cards = [
     "id": 48,
     "en": "That concludes my overview of this control improvement.",
     "pt": "Isso conclui minha apresentação geral dessa melhoria de controle."
+  },
+  {
+    "id": 49,
+    "en": "I'll give you an overview of how it works and its main features.",
+    "pt": "Vou apresentar uma visão geral de como funciona e de suas principais funcionalidades."
+  },
+  {
+    "id": 50,
+    "en": "In the picture on the right, we can see where the component is located.",
+    "pt": "Na imagem à direita, podemos ver onde o componente está localizado."
+  },
+  {
+    "id": 51,
+    "en": "Before we can start testing, we need to go through several steps.",
+    "pt": "Antes de começar os testes, precisamos passar por várias etapas."
+  },
+  {
+    "id": 52,
+    "en": "The main difference is that we're using a simulator instead of the physical component.",
+    "pt": "A principal diferença é que estamos usando um simulador em vez do componente físico."
+  },
+  {
+    "id": 53,
+    "en": "These features allow us to test different operating conditions.",
+    "pt": "Essas funcionalidades nos permitem testar diferentes condições de operação."
+  },
+  {
+    "id": 54,
+    "en": "I won't go into too much technical detail today.",
+    "pt": "Não vou entrar em muitos detalhes técnicos hoje."
+  },
+  {
+    "id": 55,
+    "en": "Now that we have the context, let's look at why we developed the simulator.",
+    "pt": "Agora que temos o contexto, vamos ver por que desenvolvemos o simulador."
+  },
+  {
+    "id": 56,
+    "en": "With that in mind, let's move on to the next point.",
+    "pt": "Com isso em mente, vamos passar para o próximo ponto."
+  },
+  {
+    "id": 57,
+    "en": "Finally, let's look at the test setup.",
+    "pt": "Por fim, vamos analisar a configuração de testes."
+  },
+  {
+    "id": 58,
+    "en": "If anyone needs help with this project, please feel free to reach out to me.",
+    "pt": "Se alguém precisar de ajuda com este projeto, fique à vontade para entrar em contato comigo."
+  },
+  {
+    "id": 59,
+    "en": "That concludes my presentation. Thank you for your attention. Does anyone have any questions?",
+    "pt": "Isso conclui minha apresentação. Obrigado pela atenção. Alguém tem alguma pergunta?"
   }
 ];
