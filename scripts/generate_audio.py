@@ -59,7 +59,7 @@ async def main():
     if not raw.startswith("export const practiceWords = "):
         raise ValueError("Unexpected practice-words.js format")
     word_map = json.loads(raw.split("=", 1)[1].strip().rstrip(";"))
-    selected = set()
+    selected = {}
     for deck, data_path in DECKS.items():
         cards = read_cards(data_path)
         deck_words = word_map.get(deck)
@@ -74,18 +74,29 @@ async def main():
                     raise ValueError(f"Unsafe word slug: {word!r}")
                 if not re.search(r"(?<![a-z])" + re.escape(word) + r"(?![a-z])", card["en"], re.I):
                     raise ValueError(f"Word {word!r} not in {deck} card {card['id']}")
-                selected.add(word)
+                selected[word] = word
+            # Generate isolated audio for every token in every sentence, including
+            # contractions. A word is generated once and shared by all cards.
+            for token in re.findall(r"[A-Za-z]+(?:['’][A-Za-z]+)*", card["en"]):
+                spoken = token.replace('’', "'")
+                slug = spoken.lower().replace("'", "_")
+                if not re.fullmatch(r"[a-z]+(?:_[a-z]+)*", slug):
+                    raise ValueError(f"Unsafe token slug: {slug!r}")
+                # Respect acronym spelling (PID, ECU) and the pronoun 'I'.
+                audible = spoken if spoken == 'I' or (len(spoken) > 1 and spoken.isupper()) else spoken.lower()
+                if slug not in selected or audible.isupper():
+                    selected[slug] = audible
         unknown = set(deck_words) - {str(card["id"]) for card in cards}
         if unknown:
             raise ValueError(f"Unknown card IDs in {deck} word map: {sorted(unknown)}")
 
-    for word in sorted(selected):
+    for slug, spoken in sorted(selected.items()):
         for label, voice in VOICES.items():
-            relative_path = f"{label}/words/{word}.mp3"
-            digest = hashlib.sha256((voice + "\n" + RATE + "\n" + word).encode("utf-8")).hexdigest()
+            relative_path = f"{label}/words/{slug}.mp3"
+            digest = hashlib.sha256((voice + "\n" + RATE + "\n" + spoken).encode("utf-8")).hexdigest()
             latest[relative_path] = digest
             if existing.get(relative_path) != digest or not (AUDIO / relative_path).is_file():
-                pending.append((relative_path, word, voice))
+                pending.append((relative_path, spoken, voice))
 
     semaphore = asyncio.Semaphore(CONCURRENCY)
 
