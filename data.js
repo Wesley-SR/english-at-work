@@ -293,5 +293,45 @@ export const cards = [
     "id": 59,
     "en": "That concludes my presentation. Thank you for your attention. Does anyone have any questions?",
     "pt": "Isso conclui minha apresentação. Obrigado pela atenção. Alguém tem alguma pergunta?"
+  },
+  {
+    "id": 60,
+    "en": "These findings suggest that combining ion current and knock indicators enhances knock detection reliability.",
+    "pt": "Esses resultados sugerem que combinar a corrente de ionização e os indicadores de knock aumenta a confiabilidade da detecção de knock."
+  },
+  {
+    "id": 61,
+    "en": "Traditional knock detection methods primarily rely on vibration sensors attached to the engine block.",
+    "pt": "Os métodos tradicionais de detecção de knock dependem principalmente de sensores de vibração instalados no bloco do motor."
+  },
+  {
+    "id": 62,
+    "en": "However, even though the results look promising, we still need to validate the method under different operating conditions.",
+    "pt": "No entanto, embora os resultados pareçam promissores, ainda precisamos validar o método em diferentes condições de operação."
+  },
+  {
+    "id": 63,
+    "en": "The flame kernel's reaction to changes in the air-fuel mixture can affect early combustion stability.",
+    "pt": "A reação do núcleo inicial de chama a mudanças na mistura ar-combustível pode afetar a estabilidade da combustão em sua fase inicial."
+  },
+  {
+    "id": 64,
+    "en": "They leveraged this by defining a parameter that combines information from both sensors.",
+    "pt": "Eles aproveitaram isso ao definir um parâmetro que combina informações dos dois sensores."
+  },
+  {
+    "id": 65,
+    "en": "Beyond knock detection, ion current signals can provide useful information about the combustion process.",
+    "pt": "Além da detecção de knock, os sinais de corrente de ionização podem fornecer informações úteis sobre o processo de combustão."
+  },
+  {
+    "id": 66,
+    "en": "In this manner, we can compare the two methods under the same operating conditions.",
+    "pt": "Dessa forma, podemos comparar os dois métodos nas mesmas condições de operação."
+  },
+  {
+    "id": 67,
+    "en": "The proposed approach is straightforward to implement and validate.",
+    "pt": "A abordagem proposta é simples de implementar e validar."
   }
 ];
