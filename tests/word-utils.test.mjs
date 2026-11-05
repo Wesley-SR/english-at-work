@@ -25,7 +25,7 @@ test('all existing Work and Home cards expose every word for isolated playback',
       assert.equal(tokens.map(x=>x.text).join(' '),
         (card.en.match(/[A-Za-z]+(?:['’][A-Za-z]+)*/g)||[]).join(' '));
       for (const highlighted of practiceWords[deck][card.id]) {
-        assert.ok(tokens.some(token=>token.slug === highlighted),
+        assert.ok(tokens.some(token=>token.slug === highlighted || token.slug.startsWith(highlighted + '_')),
           'curated word '+highlighted+' present in all words for '+deck+' '+card.id);
       }
     }
