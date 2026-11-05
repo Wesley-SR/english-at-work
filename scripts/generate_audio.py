@@ -9,6 +9,7 @@ import asyncio
 import hashlib
 import json
 import os
+import re
 from pathlib import Path
 
 import edge_tts
@@ -18,6 +19,7 @@ AUDIO = ROOT / "audio"
 INDEX = AUDIO / "manifest.json"
 VOICES = {"ryan": "en-GB-RyanNeural", "thomas": "en-GB-ThomasNeural"}
 DECKS = {"work": ROOT / "data.js", "home": ROOT / "home-data.js"}
+WORDS_SOURCE = ROOT / "practice-words.js"
 RATE = "-10%"
 CONCURRENCY = 3
 
@@ -50,6 +52,40 @@ async def main():
                 latest[relative_path] = digest
                 if existing.get(relative_path) != digest or not (AUDIO / relative_path).is_file():
                     pending.append((relative_path, sentence, voice))
+
+    # One word recording can be reused across any card containing that word.
+    # Curated word choices are shared by the front end and the audio builder.
+    raw = WORDS_SOURCE.read_text(encoding="utf-8").strip()
+    if not raw.startswith("export const practiceWords = "):
+        raise ValueError("Unexpected practice-words.js format")
+    word_map = json.loads(raw.split("=", 1)[1].strip().rstrip(";"))
+    selected = set()
+    for deck, data_path in DECKS.items():
+        cards = read_cards(data_path)
+        deck_words = word_map.get(deck)
+        if not isinstance(deck_words, dict):
+            raise ValueError(f"Missing word map for {deck}")
+        for card in cards:
+            items = deck_words.get(str(card["id"]), [])
+            if not isinstance(items, list) or not 1 <= len(items) <= 3 or len(set(items)) != len(items):
+                raise ValueError(f"Invalid word selection for {deck}/{card['id']}")
+            for word in items:
+                if not isinstance(word, str) or not re.fullmatch(r"[a-z]+", word):
+                    raise ValueError(f"Unsafe word slug: {word!r}")
+                if not re.search(r"(?<![a-z])" + re.escape(word) + r"(?![a-z])", card["en"], re.I):
+                    raise ValueError(f"Word {word!r} not in {deck} card {card['id']}")
+                selected.add(word)
+        unknown = set(deck_words) - {str(card["id"]) for card in cards}
+        if unknown:
+            raise ValueError(f"Unknown card IDs in {deck} word map: {sorted(unknown)}")
+
+    for word in sorted(selected):
+        for label, voice in VOICES.items():
+            relative_path = f"{label}/words/{word}.mp3"
+            digest = hashlib.sha256((voice + "\n" + RATE + "\n" + word).encode("utf-8")).hexdigest()
+            latest[relative_path] = digest
+            if existing.get(relative_path) != digest or not (AUDIO / relative_path).is_file():
+                pending.append((relative_path, word, voice))
 
     semaphore = asyncio.Semaphore(CONCURRENCY)
 
