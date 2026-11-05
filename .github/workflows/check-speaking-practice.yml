@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - feature/speaking-practice-free
+      - feature/difficult-words-audio
   pull_request:
     paths:
       - 'speaking.mjs'
@@ -11,6 +12,9 @@ on:
       - 'tests/speaking.test.mjs'
       - 'tests/history-guard.test.mjs'
       - 'app.js'
+      - 'practice-words.js'
+      - 'scripts/generate_audio.py'
+      - 'tests/practice-words.test.mjs'
       - 'index.html'
       - 'style.css'
       - '.github/workflows/check-speaking-practice.yml'
@@ -31,3 +35,4 @@ jobs:
           node --check speaking.mjs
           node --check history-guard.mjs
           node --check app.js
+          node --check practice-words.js
