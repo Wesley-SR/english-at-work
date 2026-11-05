@@ -190,3 +190,14 @@ footer{color:#8997a9}
   .words-speed{margin-top:2px;}
   .word-audio-button{font-size:12px;min-height:42px;}
 }
+
+
+/* Switch between curated and full phrase word-by-word listening. */
+.word-mode-switch{display:flex;gap:7px;flex-wrap:wrap;margin-top:13px;}
+.word-mode-switch button{padding:8px 12px;font-size:12px;border-radius:8px;color:#a6b5c9;}
+.word-mode-switch button.active{background:#3b516d;color:#e3ecfb;border-color:#7a95b7;}
+.word-mode-switch button[aria-pressed="true"]{font-weight:600;}
+@media(max-width:540px){
+  .word-mode-switch{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+  .word-mode-switch button{font-size:11px;padding:9px 7px;}
+}
