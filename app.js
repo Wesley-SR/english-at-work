@@ -1,6 +1,7 @@
 import {cards as workCards} from './data.js?v=20261105-67';
 import {homeCards} from './home-data.js';
 import {practiceWords} from './practice-words.js?v=20261105-difficult-words';
+import {sentenceWords,wordAudioSlug} from './word-utils.mjs?v=20261105-all-words';
 import {compareSpeech} from './speaking.mjs?v=20261102-speaking-free';
 import {confirmHistoryClear} from './history-guard.mjs?v=20261102-history-guard';
 const contexts={work:{name:'Work',cards:workCards,key:'english-at-work-progress-v1'},home:{name:'Home',cards:homeCards,key:'english-at-home-progress-v1'}};
@@ -125,6 +126,8 @@ function speak(){
 
 // The word choices are curated for each card, not based on a pronunciation
 // assessment. Recordings use the currently selected Ryan / Thomas voice.
+let wordMode = 'difficult';
+
 function playDifficultWord(word) {
   if (!queue[idx] || reveal < 1 || !context) return;
   const status = $('word-audio-status');
@@ -136,7 +139,7 @@ function playDifficultWord(word) {
     speakDevice(word, rate === 1 ? .85 : .7);
     return;
   }
-  const file = './audio/' + voiceChoice + '/words/' + encodeURIComponent(word.toLowerCase()) + '.mp3';
+  const file = './audio/' + voiceChoice + '/words/' + wordAudioSlug(word) + '.mp3';
   const player = new Audio(file);
   recordedAudio = player;
   player.playbackRate = rate;
@@ -160,12 +163,20 @@ function showDifficultWords() {
   const card = queue[idx];
   if (!card || !context || reveal < 1) return;
   const collection = context === contexts.work ? 'work' : 'home';
-  const words = practiceWords[collection]?.[String(card.id)] || [];
+  const words = wordMode === 'all'
+    ? sentenceWords(card.en).map(token => token.text)
+    : (practiceWords[collection]?.[String(card.id)] || []);
   const section = $('difficult-words');
   const list = $('difficult-words-list');
   list.replaceChildren();
   $('word-audio-status').textContent = '';
   section.hidden = words.length === 0;
+  for (const mode of ['difficult','all']) {
+    const button = $('word-mode-' + mode);
+    const active = wordMode === mode;
+    button.classList.toggle('active', active);
+    button.setAttribute('aria-pressed', String(active));
+  }
   for (const word of words) {
     const button = document.createElement('button');
     button.type = 'button';
@@ -175,6 +186,15 @@ function showDifficultWords() {
     button.addEventListener('click', () => playDifficultWord(word));
     list.appendChild(button);
   }
+}
+
+for (const mode of ['difficult','all']) {
+  $('word-mode-' + mode).addEventListener('click', () => {
+    if (wordMode === mode) return;
+    wordMode = mode;
+    stopAudio();
+    showDifficultWords();
+  });
 }
 
 // Free speaking practice: the browser may use a cloud speech recognition service.

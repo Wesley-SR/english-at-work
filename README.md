@@ -2,6 +2,15 @@
 
 A discreet, audio-first flashcard trainer with Work and Home collections. Listen with pre-generated British male recordings (Ryan or Thomas), optionally type an answer, reveal the English and Portuguese text, and grade a card for spaced review.
 
+## All words — word-by-word listening
+
+After revealing a flashcard with **Show text**, choose between **Difficult words** (the original curated suggestions) and **All words**. All words renders each word of the current sentence in order—including repeated words and contractions—with a play button. Tap as often as needed and choose Normal or Slow playback.
+
+- Isolated recordings are pre-generated for every distinct word across Work and Home, in the selected Ryan/Thomas British male voice. Shared words reuse the same recording.
+- Contractions such as `I'll` and `haven't` are played as individual spoken words.
+- Switching modes does not affect the flashcard's spaced-review schedule or history.
+- Existing two-stage Clear history protection remains unchanged.
+
 ## Difficult words — isolated British audio
 
 When an English flashcard is revealed with **Show text**, a compact **Difficult words** panel suggests one to three challenging words from that card. Tap a word to hear it alone, tap it again to repeat, or choose **Slow** (0.8×) to practise pronunciation more carefully.
