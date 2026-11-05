@@ -1,4 +1,4 @@
-import {cards as workCards} from './data.js?v=20261102-59';
+import {cards as workCards} from './data.js?v=20261105-67';
 import {homeCards} from './home-data.js';
 import {compareSpeech} from './speaking.mjs?v=20261102-speaking-free';
 import {confirmHistoryClear} from './history-guard.mjs?v=20261102-history-guard';
