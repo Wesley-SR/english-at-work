@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#12192c"><meta name="description" content="Personal review workspace.">
-<title>Review Panel</title><link rel="manifest" href="./manifest.webmanifest"><link rel="stylesheet" href="./style.css?v=20261105-difficult-words">
+<title>Review Panel</title><link rel="manifest" href="./manifest.webmanifest"><link rel="stylesheet" href="./style.css?v=20261105-all-words">
 </head>
 <body><main class="app">
 <section id="choose" class="home-screen">
@@ -40,8 +40,8 @@
   <section id="difficult-words" class="difficult-words" hidden aria-label="Difficult words">
     <div class="difficult-words-header">
       <div>
-        <h2>Difficult words</h2>
-        <p>Tap a word to hear it on its own. Tap again to repeat.</p>
+        <h2>Word practice</h2>
+        <p>Listen to words individually. Tap again to repeat.</p>
       </div>
       <label class="words-speed" for="words-speed">Speed
         <select id="words-speed" aria-label="Difficult words playback speed">
@@ -49,6 +49,10 @@
           <option value="0.8">Slow</option>
         </select>
       </label>
+    </div>
+    <div class="word-mode-switch" role="group" aria-label="Which words to practise">
+      <button type="button" class="active" id="word-mode-difficult" aria-pressed="true">Difficult words</button>
+      <button type="button" id="word-mode-all" aria-pressed="false">All words</button>
     </div>
     <div id="difficult-words-list" class="difficult-words-list"></div>
     <p id="word-audio-status" class="word-audio-status" role="status" aria-live="polite"></p>
@@ -82,4 +86,4 @@
 <div id="empty" hidden><h2>Up to date</h2><p>No pending items. Select All items to browse.</p></div>
 </section>
 <footer>Progress stored locally. Audio plays on request.</footer>
-</main><script type="module" src="./app.js?v=20261105-difficult-words"></script></body></html>
+</main><script type="module" src="./app.js?v=20261105-all-words"></script></body></html>
