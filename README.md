@@ -2,6 +2,18 @@
 
 A discreet, audio-first flashcard trainer with Work and Home collections. Listen with pre-generated British male recordings (Ryan or Thomas), optionally type an answer, reveal the English and Portuguese text, and grade a card for spaced review.
 
+## Difficult words — isolated British audio
+
+When an English flashcard is revealed with **Show text**, a compact **Difficult words** panel suggests one to three challenging words from that card. Tap a word to hear it alone, tap it again to repeat, or choose **Slow** (0.8×) to practise pronunciation more carefully.
+
+- The highlighted word list is curated per card in `practice-words.js`, not estimated from the user's speech.
+- The word recordings use the **same selected British male voice** (Ryan or Thomas) as full sentences. Each word MP3 is reused across cards and decks.
+- Existing review answers, grades, sentence audio, and the microphone practice flow are unchanged.
+- The panel appears **only after revealing the English text**, so it does not spoil audio-first recall.
+- No microphone access or network API call is needed for isolated word playback: all generated MP3s are static site assets.
+- The browser's device-voice option is also supported. If a word recording cannot be loaded, the app explains the issue and tries device speech synthesis.
+- Existing progress keys and the double confirmation for Clear history are preserved.
+
 ## Experimental Speaking Practice branch
 
 Branch: `feature/speaking-practice-free`.
