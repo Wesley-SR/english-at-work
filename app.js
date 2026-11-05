@@ -1,5 +1,6 @@
 import {cards as workCards} from './data.js?v=20261105-67';
 import {homeCards} from './home-data.js';
+import {practiceWords} from './practice-words.js?v=20261105-difficult-words';
 import {compareSpeech} from './speaking.mjs?v=20261102-speaking-free';
 import {confirmHistoryClear} from './history-guard.mjs?v=20261102-history-guard';
 const contexts={work:{name:'Work',cards:workCards,key:'english-at-work-progress-v1'},home:{name:'Home',cards:homeCards,key:'english-at-home-progress-v1'}};
@@ -25,6 +26,9 @@ function show(){
   stopAudio();
   stopRecognition();
   resetSpeaking();
+  $('difficult-words').hidden = true;
+  $('difficult-words-list').replaceChildren();
+  $('word-audio-status').textContent = '';
   const c=queue[idx];
   $('count').textContent=context.cards.filter(due).length+' pending';
   $('review').classList.toggle('active',!all);
@@ -53,6 +57,7 @@ function showEnglish(){
   $('answer').hidden=false;
   $('ratings').hidden=false;
   $('show-english').disabled=true;
+  showDifficultWords();
 }
 function showPortuguese(){
   if(!queue[idx])return;
@@ -85,13 +90,13 @@ function updateVoiceOptions(){
     ? 'Uses your browser voices; the voice may be female.'
     : 'British male recording. No device voice installation required.';
 }
-function speakDevice(sentence){
+function speakDevice(sentence, rate=.85){
   if(!('speechSynthesis' in window)){
     alert('Your browser does not support device speech. Choose Ryan or Thomas in the menu.');
     return;
   }
   const utterance=new SpeechSynthesisUtterance(sentence);
-  utterance.lang='en-GB';utterance.rate=.85;
+  utterance.lang='en-GB';utterance.rate=rate;
   const voice=speechSynthesis.getVoices().find(v=>v.lang.toLowerCase()==='en-gb');
   if(voice)utterance.voice=voice;
   speechSynthesis.speak(utterance);
@@ -116,6 +121,60 @@ function speak(){
   player.addEventListener('error',fail,{once:true});
   player.addEventListener('ended',()=>{if(recordedAudio===player)recordedAudio=null},{once:true});
   player.play().catch(fail);
+}
+
+// The word choices are curated for each card, not based on a pronunciation
+// assessment. Recordings use the currently selected Ryan / Thomas voice.
+function playDifficultWord(word) {
+  if (!queue[idx] || reveal < 1 || !context) return;
+  const status = $('word-audio-status');
+  const rate = Number($('words-speed').value) || 1;
+  stopRecognition();
+  stopAudio();
+  status.textContent = 'Playing: ' + word;
+  if (voiceChoice === 'device') {
+    speakDevice(word, rate === 1 ? .85 : .7);
+    return;
+  }
+  const file = './audio/' + voiceChoice + '/words/' + encodeURIComponent(word.toLowerCase()) + '.mp3';
+  const player = new Audio(file);
+  recordedAudio = player;
+  player.playbackRate = rate;
+  const fail = () => {
+    if (recordedAudio !== player) return;
+    recordedAudio = null;
+    status.textContent = 'Word recording unavailable. Trying device voice.';
+    speakDevice(word, rate === 1 ? .85 : .7);
+  };
+  player.addEventListener('error', fail, {once:true});
+  player.addEventListener('ended', () => {
+    if (recordedAudio === player) {
+      recordedAudio = null;
+      status.textContent = '';
+    }
+  }, {once:true});
+  player.play().catch(fail);
+}
+
+function showDifficultWords() {
+  const card = queue[idx];
+  if (!card || !context || reveal < 1) return;
+  const collection = context === contexts.work ? 'work' : 'home';
+  const words = practiceWords[collection]?.[String(card.id)] || [];
+  const section = $('difficult-words');
+  const list = $('difficult-words-list');
+  list.replaceChildren();
+  $('word-audio-status').textContent = '';
+  section.hidden = words.length === 0;
+  for (const word of words) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'word-audio-button';
+    button.textContent = '🔊 ' + word;
+    button.setAttribute('aria-label', 'Play isolated word: ' + word);
+    button.addEventListener('click', () => playDifficultWord(word));
+    list.appendChild(button);
+  }
 }
 
 // Free speaking practice: the browser may use a cloud speech recognition service.
