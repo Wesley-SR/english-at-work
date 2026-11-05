@@ -5,6 +5,7 @@ on:
     branches:
       - feature/speaking-practice-free
       - feature/difficult-words-audio
+      - feature/all-words-audio
   pull_request:
     paths:
       - 'speaking.mjs'
@@ -13,6 +14,8 @@ on:
       - 'tests/history-guard.test.mjs'
       - 'app.js'
       - 'practice-words.js'
+      - 'word-utils.mjs'
+      - 'tests/word-utils.test.mjs'
       - 'scripts/generate_audio.py'
       - 'tests/practice-words.test.mjs'
       - 'index.html'
@@ -36,3 +39,4 @@ jobs:
           node --check history-guard.mjs
           node --check app.js
           node --check practice-words.js
+          node --check word-utils.mjs
