@@ -6,6 +6,7 @@ on:
       - feature/speaking-practice-free
       - feature/difficult-words-audio
       - feature/all-words-audio
+      - fix/audio-leading-silence
   pull_request:
     paths:
       - 'speaking.mjs'
