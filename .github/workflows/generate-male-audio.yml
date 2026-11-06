@@ -3,7 +3,7 @@ name: Generate male voice audio
 on:
   workflow_dispatch:
   push:
-    branches: [main, feature/difficult-words-audio, feature/all-words-audio]
+    branches: [main, feature/difficult-words-audio, feature/all-words-audio, fix/audio-leading-silence]
     paths:
       - data.js
       - home-data.js
@@ -17,7 +17,7 @@ permissions:
 jobs:
   generate:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     steps:
       - name: Check out flashcards
         uses: actions/checkout@v4
@@ -30,8 +30,37 @@ jobs:
       - name: Install speech generator
         run: python -m pip install edge-tts
 
-      - name: Generate British male voice clips
+      - name: Prepare audio conversion
+        run: |
+          ffmpeg -version | head -n 1
+          python -m py_compile scripts/generate_audio.py
+
+      - name: Generate British male voice clips with silent lead-in
         run: python scripts/generate_audio.py
+
+      - name: Verify beginning of sample MP3s is silent
+        run: |
+          python - <<'PY'
+          import re
+          import subprocess
+
+          examples = [
+              'audio/ryan/work/1.mp3',
+              'audio/thomas/home/1.mp3',
+              'audio/ryan/words/straightforward.mp3',
+              'audio/thomas/words/i_ll.mp3',
+          ]
+          for sound in examples:
+              check = subprocess.run(
+                  ['ffmpeg', '-nostdin', '-hide_banner', '-i', sound,
+                   '-af', 'silencedetect=noise=-40dB:d=0.35', '-f', 'null', '-'],
+                  capture_output=True, text=True, check=True,
+              )
+              intervals = re.findall(r'silence_end:\\s*([0-9.]+)', check.stderr)
+              if not intervals or float(intervals[0]) < 0.40:
+                  raise RuntimeError(f'Start silence not detected in {sound}: {intervals}')
+              print(f'{sound}: {float(intervals[0]):.2f}s leading silence')
+          PY
 
       - name: Commit MP3s to public site
         run: |
