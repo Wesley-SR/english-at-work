@@ -22,6 +22,8 @@ DECKS = {"work": ROOT / "data.js", "home": ROOT / "home-data.js"}
 WORDS_SOURCE = ROOT / "practice-words.js"
 RATE = "-10%"
 CONCURRENCY = 3
+# Give speakers / Bluetooth devices time to wake up before the first phoneme.
+LEAD_IN_MS = 450
 
 
 def read_cards(path):
@@ -40,6 +42,21 @@ async def main():
         existing = json.loads(INDEX.read_text(encoding="utf-8"))
     latest = {}
     pending = []
+
+    def queue_clip(relative_path, sentence, voice):
+        target = AUDIO / relative_path
+        previous_digest = hashlib.sha256((voice + "\n" + RATE + "\n" + sentence).encode("utf-8")).hexdigest()
+        padded_digest = hashlib.sha256(
+            (voice + "\n" + RATE + "\n" + sentence + f"\nlead-in-ms={LEAD_IN_MS}").encode("utf-8")
+        ).hexdigest()
+        latest[relative_path] = padded_digest
+        if existing.get(relative_path) == padded_digest and target.is_file():
+            return
+        # Existing recordings can be padded locally without requesting all audio
+        # from the TTS provider again. Failed workflow runs never commit partial edits.
+        pad_existing = existing.get(relative_path) == previous_digest and target.is_file()
+        pending.append((relative_path, sentence, voice, pad_existing))
+
     for name, data_path in DECKS.items():
         for card in read_cards(data_path):
             card_id = str(card["id"])
@@ -48,10 +65,7 @@ async def main():
             sentence = card["en"]
             for label, voice in VOICES.items():
                 relative_path = f"{label}/{name}/{card_id}.mp3"
-                digest = hashlib.sha256((voice + "\n" + RATE + "\n" + sentence).encode("utf-8")).hexdigest()
-                latest[relative_path] = digest
-                if existing.get(relative_path) != digest or not (AUDIO / relative_path).is_file():
-                    pending.append((relative_path, sentence, voice))
+                queue_clip(relative_path, sentence, voice)
 
     # One word recording can be reused across any card containing that word.
     # Curated word choices are shared by the front end and the audio builder.
@@ -93,28 +107,47 @@ async def main():
     for slug, spoken in sorted(selected.items()):
         for label, voice in VOICES.items():
             relative_path = f"{label}/words/{slug}.mp3"
-            digest = hashlib.sha256((voice + "\n" + RATE + "\n" + spoken).encode("utf-8")).hexdigest()
-            latest[relative_path] = digest
-            if existing.get(relative_path) != digest or not (AUDIO / relative_path).is_file():
-                pending.append((relative_path, spoken, voice))
+            queue_clip(relative_path, spoken, voice)
 
     semaphore = asyncio.Semaphore(CONCURRENCY)
 
-    async def generate(relative_path, sentence, voice):
+    async def generate(relative_path, sentence, voice, pad_existing):
         target = AUDIO / relative_path
         target.parent.mkdir(parents=True, exist_ok=True)
-        temporary = target.with_suffix(".partial.mp3")
+        raw = target.with_suffix(".source.partial.mp3")
+        padded = target.with_suffix(".padded.partial.mp3")
         async with semaphore:
             for attempt in range(4):
                 try:
-                    await edge_tts.Communicate(sentence, voice, rate=RATE).save(str(temporary))
-                    if temporary.stat().st_size < 512:
-                        raise RuntimeError(f"Unexpectedly small audio: {temporary}")
-                    os.replace(temporary, target)
-                    print(f"Generated: audio/{relative_path} ({target.stat().st_size} bytes)", flush=True)
+                    source = target if pad_existing else raw
+                    if not pad_existing:
+                        await edge_tts.Communicate(sentence, voice, rate=RATE).save(str(raw))
+                    if source.stat().st_size < 512:
+                        raise RuntimeError(f"Unexpectedly small audio: {source}")
+
+                    # Prepend real silent PCM samples before the MP3 is encoded.
+                    # This prevents the first syllable being lost when an output
+                    # device needs time to activate. It works on all browsers.
+                    process = await asyncio.create_subprocess_exec(
+                        "ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error", "-y",
+                        "-i", str(source),
+                        "-af", f"adelay={LEAD_IN_MS}:all=1",
+                        "-c:a", "libmp3lame", "-b:a", "48k", str(padded),
+                        stdout=asyncio.subprocess.DEVNULL,
+                        stderr=asyncio.subprocess.PIPE,
+                    )
+                    _, errors = await process.communicate()
+                    if process.returncode != 0 or not padded.is_file() or padded.stat().st_size < 512:
+                        raise RuntimeError(
+                            "Could not pad MP3: " + errors.decode("utf-8", errors="replace")[-1000:]
+                        )
+                    os.replace(padded, target)
+                    raw.unlink(missing_ok=True)
+                    print(f"Pre-roll {LEAD_IN_MS}ms: audio/{relative_path} ({target.stat().st_size} bytes)", flush=True)
                     return
                 except Exception as exc:
-                    temporary.unlink(missing_ok=True)
+                    raw.unlink(missing_ok=True)
+                    padded.unlink(missing_ok=True)
                     if attempt == 3:
                         raise RuntimeError(f"Failed to generate {relative_path}") from exc
                     await asyncio.sleep(2 ** attempt + 1)

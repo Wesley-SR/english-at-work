@@ -111,7 +111,7 @@ function speak(){
     return;
   }
   const collection=context===contexts.work?'work':'home';
-  const path='./audio/'+voiceChoice+'/'+collection+'/'+card.id+'.mp3';
+  const path='./audio/'+voiceChoice+'/'+collection+'/'+card.id+'.mp3?v=20261106-leadin';
   const player=new Audio(path);
   recordedAudio=player;
   const fail=()=>{
@@ -139,7 +139,7 @@ function playDifficultWord(word) {
     speakDevice(word, rate === 1 ? .85 : .7);
     return;
   }
-  const file = './audio/' + voiceChoice + '/words/' + wordAudioSlug(word) + '.mp3';
+  const file = './audio/' + voiceChoice + '/words/' + wordAudioSlug(word) + '.mp3?v=20261106-leadin';
   const player = new Audio(file);
   recordedAudio = player;
   player.playbackRate = rate;
