@@ -30,9 +30,11 @@ jobs:
       - name: Install speech generator
         run: python -m pip install edge-tts
 
-      - name: Prepare audio conversion
+      - name: Install audio conversion utility
         run: |
-          ffmpeg -version | head -n 1
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+          command -v ffmpeg
           python -m py_compile scripts/generate_audio.py
 
       - name: Generate British male voice clips with silent lead-in
