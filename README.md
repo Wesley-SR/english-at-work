@@ -1,5 +1,13 @@
 # Review Panel — English at Work
 
+## Audio reliability — first syllable
+
+All prerecorded Ryan/Thomas MP3 clips (full sentences and isolated words) are built with **450 ms of silent audio at the beginning**. This helps speakers and Bluetooth headsets activate before the first spoken sound; no word or sentence text is changed.
+
+The audio build uses FFmpeg to pad existing clips without requesting new TTS synthesis for unchanged content. A version parameter in `app.js` forces browsers to fetch the updated clips rather than use stale cached copies. Review progress stays in the original localStorage keys, and the two-stage Clear history guard is unchanged.
+
+This reduces device-related startup clipping, but cannot guarantee that every output device or synthesis service will always reproduce the beginning perfectly.
+
 A discreet, audio-first flashcard trainer with Work and Home collections. Listen with pre-generated British male recordings (Ryan or Thomas), optionally type an answer, reveal the English and Portuguese text, and grade a card for spaced review.
 
 ## All words — word-by-word listening
