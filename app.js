@@ -1,11 +1,10 @@
 import {cards as workCards} from './data.js?v=20261105-67';
 import {homeCards} from './home-data.js';
-import {addPhrase, getAllCards, getVisibleCards, loadPhraseState, savePhraseState, setPhraseHidden, suggestDifficultWords} from './phrase-manager.mjs?v=20261110-1';
 import {practiceWords} from './practice-words.js?v=20261105-difficult-words';
 import {sentenceWords,wordAudioSlug} from './word-utils.mjs?v=20261105-all-words';
 import {compareSpeech} from './speaking.mjs?v=20261102-speaking-free';
 import {confirmHistoryClear} from './history-guard.mjs?v=20261102-history-guard';
-const contexts={work:{slug:'work',name:'Work',baseCards:workCards,cards:workCards,key:'english-at-work-progress-v1'},home:{slug:'home',name:'Home',baseCards:homeCards,cards:homeCards,key:'english-at-home-progress-v1'}};
+const contexts={work:{name:'Work',cards:workCards,key:'english-at-work-progress-v1'},home:{name:'Home',cards:homeCards,key:'english-at-home-progress-v1'}};
 const DAY=86400000,$=id=>document.getElementById(id);
 let context=null,progress={},queue=[],idx=0,reveal=0,all=false,completed=0;
 function load(){try{return JSON.parse(localStorage.getItem(context.key))||{}}catch{return {}}}
@@ -21,23 +20,8 @@ function stopAudio(){
   }
   if('speechSynthesis' in window)speechSynthesis.cancel();
 }
-function choose(which){
-  const selected=contexts[which];if(!selected)return;
-  try{
-    selected.phraseState=loadPhraseState(localStorage,selected.slug);
-    selected.cards=getVisibleCards(selected.baseCards,selected.phraseState);
-  }catch(error){alert('Could not load saved phrases: '+error.message);return;}
-  context=selected;
-  progress=load();
-  all=false;
-  closePhraseManager();
-  $('choose').hidden=true;
-  $('study').hidden=false;
-  $('heading').textContent=context.name;
-  updateCollectionTotals();
-  build();
-}
-function back(){stopAudio();stopRecognition();resetSpeaking();closePhraseManager();$('study').hidden=true;$('choose').hidden=false;context=null}
+function choose(which){context=contexts[which];if(!context)return;progress=load();all=false;$('choose').hidden=true;$('study').hidden=false;$('heading').textContent=context.name;build()}
+function back(){stopAudio();stopRecognition();resetSpeaking();$('study').hidden=true;$('choose').hidden=false;context=null}
 function build(){stopAudio();queue=context.cards.filter(c=>all||due(c));idx=0;completed=0;show()}
 function show(){
   stopAudio();
@@ -105,11 +89,11 @@ function updateVoiceOptions(){
   select.value=voiceChoice;
   hint.textContent=voiceChoice==='device'
     ? 'Uses your browser voices; the voice may be female.'
-    : 'Built-in phrases use British male recordings. Personal phrases use the device voice.';
+    : 'British male recording. No device voice installation required.';
 }
 function speakDevice(sentence, rate=.85){
   if(!('speechSynthesis' in window)){
-    alert('Device speech is not supported in this browser. Personal phrases need device speech synthesis.');
+    alert('Your browser does not support device speech. Choose Ryan or Thomas in the menu.');
     return;
   }
   const utterance=new SpeechSynthesisUtterance(sentence);
@@ -122,7 +106,7 @@ function speak(){
   const card=queue[idx];if(!card)return;
   stopRecognition();
   stopAudio();
-  if(voiceChoice==='device'||card.custom){
+  if(voiceChoice==='device'){
     speakDevice(card.en);
     return;
   }
@@ -151,7 +135,7 @@ function playDifficultWord(word) {
   stopRecognition();
   stopAudio();
   status.textContent = 'Playing: ' + word;
-  if (voiceChoice === 'device' || queue[idx].custom) {
+  if (voiceChoice === 'device') {
     speakDevice(word, rate === 1 ? .85 : .7);
     return;
   }
@@ -181,7 +165,7 @@ function showDifficultWords() {
   const collection = context === contexts.work ? 'work' : 'home';
   const words = wordMode === 'all'
     ? sentenceWords(card.en).map(token => token.text)
-    : (card.custom ? suggestDifficultWords(card.en) : (practiceWords[collection]?.[String(card.id)] || []));
+    : (practiceWords[collection]?.[String(card.id)] || []);
   const section = $('difficult-words');
   const list = $('difficult-words-list');
   list.replaceChildren();
@@ -368,109 +352,6 @@ if (!SpeechRecognitionAPI) {
 setSpeakingButton(false);
 $('speak-button').addEventListener('click', startRecognition);
 
-// Phrase library is stored independently of spaced-repetition history.
-// Removing means hiding; the record, ID and any prior ratings are retained.
-function updateCollectionTotals(){
-  for(const item of [contexts.work,contexts.home]){
-    try{
-      const state=item===context ? item.phraseState : loadPhraseState(localStorage,item.slug);
-      const count=getVisibleCards(item.baseCards,state).length;
-      $(item.slug+'-total').textContent=count+' items';
-    }catch{
-      $(item.slug+'-total').textContent=item.baseCards.length+' built-in items';
-    }
-  }
-}
-function closePhraseManager(){
-  $('manage-phrases').hidden=true;
-  $('review-content').hidden=false;
-  $('manage-toggle').classList.remove('active');
-}
-function openPhraseManager(){
-  if(!context)return;
-  stopAudio();
-  stopRecognition();
-  $('manage-phrases').hidden=false;
-  $('review-content').hidden=true;
-  $('manage-toggle').classList.add('active');
-  $('manage-notice').textContent='';
-  $('phrase-search').value='';
-  renderPhraseManager();
-}
-function managerMessage(message,error=false){
-  $('manage-notice').textContent=message;
-  $('manage-notice').classList.toggle('error',error);
-}
-function commitPhraseChange(next,message){
-  // Persist first. Do not update the UI or forget a prior library on failure.
-  try{savePhraseState(localStorage,context.slug,next);}
-  catch(error){managerMessage('Could not save. Your earlier phrases and history were not changed. '+error.message,true);return;}
-  context.phraseState=next;
-  context.cards=getVisibleCards(context.baseCards,next);
-  updateCollectionTotals();
-  build();
-  renderPhraseManager();
-  managerMessage(message);
-}
-function renderPhraseManager(){
-  if(!context)return;
-  const list=$('phrase-list'),filter=$('phrase-search').value.trim().toLowerCase();
-  const hidden=new Set(context.phraseState.hidden.map(String));
-  list.replaceChildren();
-  const cards=getAllCards(context.baseCards,context.phraseState);
-  let count=0;
-  for(const card of cards){
-    if(filter&&!(card.en+' '+card.pt).toLowerCase().includes(filter))continue;
-    count++;
-    const removed=hidden.has(String(card.id));
-    const item=document.createElement('div');item.className='phrase-item';
-    const details=document.createElement('div');details.className='phrase-details';
-    const english=document.createElement('strong');english.textContent=card.en;
-    const portuguese=document.createElement('p');portuguese.textContent=card.pt;
-    const meta=document.createElement('span');meta.className='phrase-meta';
-    meta.textContent=(card.custom?'Personal':'Built-in')+(removed?' · Removed from study':'');
-    details.append(english,portuguese,meta);
-    const action=document.createElement('button');action.type='button';
-    action.textContent=removed?'Restore':'Remove';
-    action.className=removed?'restore-phrase':'remove-phrase';
-    action.setAttribute('aria-label',(removed?'Restore':'Remove')+' phrase: '+card.en);
-    action.addEventListener('click',()=>{
-      if(!context)return;
-      if(!removed&&!confirm('Remove this phrase from study?\n\nThe phrase and its review history will be kept. You can restore it here at any time.'))return;
-      try{
-        const next=setPhraseHidden(context.baseCards,context.phraseState,card.id,!removed);
-        commitPhraseChange(next,removed?'Phrase restored, including its previous review schedule.':'Phrase removed from study. Previous reviews were preserved.');
-      }catch(error){managerMessage(error.message,true);}
-    });
-    item.append(details,action);list.appendChild(item);
-  }
-  if(!count){
-    const empty=document.createElement('p');empty.className='manage-empty';
-    empty.textContent='No phrases match your search.';
-    list.appendChild(empty);
-  }
-}
-$('manage-toggle').addEventListener('click',()=>{
-  if($('manage-phrases').hidden)openPhraseManager();else closePhraseManager();
-});
-$('manage-close').addEventListener('click',closePhraseManager);
-$('phrase-search').addEventListener('input',renderPhraseManager);
-$('phrase-form').addEventListener('submit',event=>{
-  event.preventDefault();
-  if(!context)return;
-  const en=$('new-english').value,pt=$('new-portuguese').value;
-  const id='user-'+(globalThis.crypto?.randomUUID?.()||String(Date.now())+'-'+Math.random().toString(36).slice(2));
-  try{
-    const next=addPhrase(context.baseCards,context.phraseState,en,pt,id);
-    const before=context.phraseState;
-    commitPhraseChange(next,'Phrase added to '+context.name+'. It is ready for review.');
-    if(context.phraseState!==before){
-      $('new-english').value='';
-      $('new-portuguese').value='';
-    }
-  }catch(error){managerMessage(error.message,true);}
-});
-
 function grade(kind){
   const c=queue[idx];if(!c||reveal<1)return;
   const old=progress[c.id]||{interval:0};
@@ -484,7 +365,7 @@ function grade(kind){
   if(idx>=queue.length){queue=[];idx=0}
   show();
 }
-updateCollectionTotals();
+$('work-total').textContent=workCards.length+' items';$('home-total').textContent=homeCards.length+' items';
 document.querySelectorAll('[data-context]').forEach(b=>b.addEventListener('click',()=>choose(b.dataset.context)));
 $('back').addEventListener('click',back);
 $('show-english').addEventListener('click',showEnglish);
