@@ -7,6 +7,7 @@ on:
       - feature/difficult-words-audio
       - feature/all-words-audio
       - fix/audio-leading-silence
+      - feature/generalize-freeze-lambda
   pull_request:
     paths:
       - 'speaking.mjs'
@@ -15,6 +16,9 @@ on:
       - 'tests/history-guard.test.mjs'
       - 'app.js'
       - 'practice-words.js'
+      - 'data.js'
+      - 'home-data.js'
+      - 'tests/generalized-work-deck.test.mjs'
       - 'word-utils.mjs'
       - 'tests/word-utils.test.mjs'
       - 'scripts/generate_audio.py'
