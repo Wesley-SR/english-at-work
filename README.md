@@ -4,7 +4,7 @@
 
 The **Work** collection contains **46 active cards**, **39 retained** from the previous release (original IDs 1–20 and 49–67), plus **seven new general-purpose sentences** with IDs **68–74** and Portuguese translations. The prior *Freeze Lambda Control* presentation cards with IDs **21–48** are no longer part of the active deck, and their IDs are never reassigned. **Home remains unchanged (15 cards)**.
 
-This deck update preserves the existing spaced-review keys (\`english-at-work-progress-v1\` and \`english-at-home-progress-v1\`) and does not clear or migrate browser localStorage. Reviews for retained card IDs are preserved; previous review entries for inactive IDs can remain in browser storage but are not displayed. The Git history and original phrase versions remain available for rollback.
+This deck update preserves the existing spaced-review keys (`english-at-work-progress-v1` and `english-at-home-progress-v1`) and does not clear or migrate browser localStorage. Reviews for retained card IDs are preserved; previous review entries for inactive IDs can remain in browser storage but are not displayed. The Git history and original phrase versions remain available for rollback.
 
 The seven new phrases have prerecorded Ryan/Thomas MP3s, the same 450 ms silent lead-in as the rest of the deck, and Difficult words / All words selections.
 
