@@ -3,7 +3,7 @@ name: Generate male voice audio
 on:
   workflow_dispatch:
   push:
-    branches: [main, feature/difficult-words-audio, feature/all-words-audio, fix/audio-leading-silence, feature/generalize-freeze-lambda]
+    branches: [main, feature/difficult-words-audio, feature/all-words-audio, fix/audio-leading-silence, feature/generalize-freeze-lambda, feature/work-colleague-questions]
     paths:
       - data.js
       - home-data.js
