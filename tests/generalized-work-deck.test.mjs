@@ -16,7 +16,7 @@ test('Work IDs are stable, removed 21â€“48 are not reused, and additions use 68â
   const ids=workCards.map(card=>card.id);
   assert.deepEqual(ids,expectedActiveIds);
   assert.equal(ids.length,56);
-  assert.equal(new Set(ids).size,46);
+  assert.equal(new Set(ids).size,56);
   assert.ok(ids.every(id=>!removedIds.includes(id)));
   assert.equal(homeCards.length,15);
 });
