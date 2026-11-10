@@ -7,7 +7,6 @@ on:
       - feature/difficult-words-audio
       - feature/all-words-audio
       - fix/audio-leading-silence
-      - feature/manage-custom-phrases
   pull_request:
     paths:
       - 'speaking.mjs'
@@ -15,8 +14,6 @@ on:
       - 'tests/speaking.test.mjs'
       - 'tests/history-guard.test.mjs'
       - 'app.js'
-      - 'phrase-manager.mjs'
-      - 'tests/phrase-manager.test.mjs'
       - 'practice-words.js'
       - 'word-utils.mjs'
       - 'tests/word-utils.test.mjs'
@@ -44,4 +41,3 @@ jobs:
           node --check app.js
           node --check practice-words.js
           node --check word-utils.mjs
-          node --check phrase-manager.mjs
