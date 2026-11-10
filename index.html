@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#12192c"><meta name="description" content="Personal review workspace.">
-<title>Review Panel</title><link rel="manifest" href="./manifest.webmanifest"><link rel="stylesheet" href="./style.css?v=20261110-phrase-manager">
+<title>Review Panel</title><link rel="manifest" href="./manifest.webmanifest"><link rel="stylesheet" href="./style.css?v=20261105-all-words">
 </head>
 <body><main class="app">
 <section id="choose" class="home-screen">
@@ -28,29 +28,7 @@
   <div><button id="back" class="back" type="button">← Menu</button><small>REVIEW PANEL</small><h1 id="heading">Work</h1></div>
   <span id="count">0 pending</span>
 </header>
-<nav><button id="review" class="active">Pending</button><button id="all">All items</button><button id="manage-toggle" type="button">Manage phrases</button><button id="reset">Clear history</button></nav>
-<section id="manage-phrases" class="manage-phrases" hidden aria-labelledby="manage-phrases-heading">
-  <div class="manage-header">
-    <h2 id="manage-phrases-heading">Manage phrases</h2>
-    <button id="manage-close" type="button">Back to practice</button>
-  </div>
-  <p class="manage-help">Add your own English phrases or remove phrases from study. Removed phrases can be restored, and their review history is kept.</p>
-  <form id="phrase-form" class="phrase-form">
-    <label for="new-english">English phrase</label>
-    <textarea id="new-english" rows="2" maxlength="500" required placeholder="Type an English sentence…"></textarea>
-    <label for="new-portuguese">Portuguese translation</label>
-    <textarea id="new-portuguese" rows="2" maxlength="700" required placeholder="Digite a tradução em português…"></textarea>
-    <button class="primary" type="submit">+ Add phrase</button>
-  </form>
-  <p id="manage-notice" class="manage-notice" role="status" aria-live="polite"></p>
-  <div class="manage-list-heading">
-    <h3>Saved phrases</h3>
-    <label for="phrase-search">Search <input id="phrase-search" type="search" autocomplete="off" placeholder="Find a phrase…"></label>
-  </div>
-  <div id="phrase-list" class="phrase-list"></div>
-  <p class="manage-help">Personal phrases and removals are stored only in this browser. They do not sync to GitHub or other devices. Personal phrases use your device's text-to-speech voice, which may differ from Ryan or Thomas.</p>
-</section>
-<div id="review-content">
+<nav><button id="review" class="active">Pending</button><button id="all">All items</button><button id="reset">Clear history</button></nav>
 <div class="progress"><div id="bar"></div></div><p id="status" aria-live="polite"></p>
 <section id="exercise">
   <div id="card" class="flashcard" aria-live="polite">
@@ -106,7 +84,6 @@
   <section id="ratings" hidden><p>Rate this item</p><div class="ratings"><button data-grade="again">Again</button><button data-grade="hard">Hard</button><button data-grade="good">Good</button><button data-grade="easy">Easy</button></div></section>
 </section>
 <div id="empty" hidden><h2>Up to date</h2><p>No pending items. Select All items to browse.</p></div>
-</div>
 </section>
 <footer>Progress stored locally. Audio plays on request.</footer>
-</main><script type="module" src="./app.js?v=20261110-phrase-manager"></script></body></html>
+</main><script type="module" src="./app.js?v=20261106-leadin"></script></body></html>
