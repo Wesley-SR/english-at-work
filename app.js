@@ -1,6 +1,6 @@
-import {cards as workCards} from './data.js?v=20261110-46';
+import {cards as workCards} from './data.js?v=20261110-56';
 import {homeCards} from './home-data.js';
-import {practiceWords} from './practice-words.js?v=20261110-generalized';
+import {practiceWords} from './practice-words.js?v=20261110-colleague-questions';
 import {sentenceWords,wordAudioSlug} from './word-utils.mjs?v=20261105-all-words';
 import {compareSpeech} from './speaking.mjs?v=20261102-speaking-free';
 import {confirmHistoryClear} from './history-guard.mjs?v=20261102-history-guard';

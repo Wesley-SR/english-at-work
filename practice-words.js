@@ -192,6 +192,48 @@ export const practiceWords = {
     "74": [
       "wanted",
       "cover"
+    ],
+    "75": [
+      "walk",
+      "through",
+      "part"
+    ],
+    "76": [
+      "happen",
+      "information"
+    ],
+    "77": [
+      "approach"
+    ],
+    "78": [
+      "recommend",
+      "differently"
+    ],
+    "79": [
+      "dealt",
+      "similar"
+    ],
+    "80": [
+      "idea",
+      "causing"
+    ],
+    "81": [
+      "sense",
+      "moving",
+      "forward"
+    ],
+    "82": [
+      "anything",
+      "consider"
+    ],
+    "83": [
+      "chance",
+      "look"
+    ],
+    "84": [
+      "mind",
+      "taking",
+      "changes"
     ]
   },
   "home": {

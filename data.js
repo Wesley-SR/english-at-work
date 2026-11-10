@@ -228,5 +228,55 @@ export const cards = [
     "id": 74,
     "en": "That's all I wanted to cover for now.",
     "pt": "Era só isso que eu queria abordar por enquanto."
+  },
+  {
+    "id": 75,
+    "en": "Could you walk me through this part?",
+    "pt": "Você poderia me explicar esta parte passo a passo?"
+  },
+  {
+    "id": 76,
+    "en": "Do you happen to know where I can find this information?",
+    "pt": "Por acaso você sabe onde posso encontrar esta informação?"
+  },
+  {
+    "id": 77,
+    "en": "What do you think about this approach?",
+    "pt": "O que você acha desta abordagem?"
+  },
+  {
+    "id": 78,
+    "en": "Would you recommend doing it differently?",
+    "pt": "Você recomendaria fazer isso de outra maneira?"
+  },
+  {
+    "id": 79,
+    "en": "Have you dealt with something similar before?",
+    "pt": "Você já lidou com algo parecido antes?"
+  },
+  {
+    "id": 80,
+    "en": "Do you have any idea what might be causing this?",
+    "pt": "Você tem alguma ideia do que pode estar causando isso?"
+  },
+  {
+    "id": 81,
+    "en": "Would it make sense to test this before moving forward?",
+    "pt": "Faria sentido testar isso antes de prosseguir?"
+  },
+  {
+    "id": 82,
+    "en": "Is there anything else we should consider?",
+    "pt": "Há mais alguma coisa que deveríamos considerar?"
+  },
+  {
+    "id": 83,
+    "en": "Have you had a chance to look into this?",
+    "pt": "Você teve a oportunidade de verificar isso?"
+  },
+  {
+    "id": 84,
+    "en": "Would you mind taking a quick look at my changes?",
+    "pt": "Você se importaria de dar uma olhada rápida nas minhas alterações?"
   }
 ];

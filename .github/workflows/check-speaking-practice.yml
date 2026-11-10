@@ -8,6 +8,7 @@ on:
       - feature/all-words-audio
       - fix/audio-leading-silence
       - feature/generalize-freeze-lambda
+      - feature/work-colleague-questions
   pull_request:
     paths:
       - 'speaking.mjs'
