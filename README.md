@@ -1,5 +1,13 @@
 # Review Panel — English at Work
 
+## Everyday questions for colleagues
+
+The **Work** deck now has **56 active cards**: 46 unchanged existing cards and ten new questions with stable IDs **75–84**. The new material covers asking for help, requesting opinions, discussing technical issues, and coordinating work. **Home remains unchanged at 15 cards.**
+
+Each new question has a Portuguese translation, curated Difficult words, All words practice, and pre-generated Ryan and Thomas British male MP3s using the existing 450 ms lead-in. The audio builder reuses recordings across phrases where possible.
+
+All previously assigned IDs (including retired IDs 21–48) stay reserved; original Work cards and ratings retain their IDs. Both review history keys remain `english-at-work-progress-v1` and `english-at-home-progress-v1`. This update does not clear, migrate, or overwrite review data.
+
 ## General-purpose Work practice
 
 The **Work** collection contains **46 active cards**, **39 retained** from the previous release (original IDs 1–20 and 49–67), plus **seven new general-purpose sentences** with IDs **68–74** and Portuguese translations. The prior *Freeze Lambda Control* presentation cards with IDs **21–48** are no longer part of the active deck, and their IDs are never reassigned. **Home remains unchanged (15 cards)**.
