@@ -79,131 +79,6 @@ export const practiceWords = {
       "deciding",
       "strategy"
     ],
-    "21": [
-      "integrator",
-      "operating",
-      "conditions"
-    ],
-    "22": [
-      "integrator",
-      "correction",
-      "pulse"
-    ],
-    "23": [
-      "freeze",
-      "integrator",
-      "offset"
-    ],
-    "24": [
-      "transient",
-      "disturbance",
-      "robustness"
-    ],
-    "25": [
-      "evaluating",
-      "reactivation",
-      "immediate"
-    ],
-    "26": [
-      "improvement",
-      "related",
-      "offset"
-    ],
-    "27": [
-      "preventing",
-      "unwanted",
-      "correction"
-    ],
-    "28": [
-      "identified",
-      "interaction",
-      "feedback"
-    ],
-    "29": [
-      "position",
-      "fixed",
-      "offset"
-    ],
-    "30": [
-      "delivery",
-      "controlled",
-      "phase"
-    ],
-    "31": [
-      "integrating",
-      "controller"
-    ],
-    "32": [
-      "accumulate",
-      "correction"
-    ],
-    "33": [
-      "stored",
-      "immediately",
-      "applied"
-    ],
-    "34": [
-      "resumes",
-      "transient"
-    ],
-    "35": [
-      "undesirable",
-      "behavior"
-    ],
-    "36": [
-      "windup"
-    ],
-    "37": [
-      "integrator",
-      "offset",
-      "freeze"
-    ],
-    "38": [
-      "accumulating",
-      "correction"
-    ],
-    "39": [
-      "integrator",
-      "wind"
-    ],
-    "40": [
-      "smoother",
-      "transition"
-    ],
-    "41": [
-      "spikes",
-      "reduces"
-    ],
-    "42": [
-      "robustness",
-      "improvement"
-    ],
-    "43": [
-      "reactivated",
-      "evaluated",
-      "immediately"
-    ],
-    "44": [
-      "validation",
-      "confirmed"
-    ],
-    "45": [
-      "completed",
-      "delay"
-    ],
-    "46": [
-      "preventing",
-      "integrator",
-      "windup"
-    ],
-    "47": [
-      "handover",
-      "improves"
-    ],
-    "48": [
-      "concludes",
-      "overview"
-    ],
     "49": [
       "overview",
       "features"
@@ -288,6 +163,35 @@ export const practiceWords = {
       "straightforward",
       "implement",
       "validate"
+    ],
+    "68": [
+      "improves",
+      "overall",
+      "performance"
+    ],
+    "69": [
+      "evaluating",
+      "approach"
+    ],
+    "70": [
+      "noticed",
+      "unexpected",
+      "behavior"
+    ],
+    "71": [
+      "process",
+      "smoother"
+    ],
+    "72": [
+      "improvement",
+      "reliable"
+    ],
+    "73": [
+      "validate"
+    ],
+    "74": [
+      "wanted",
+      "cover"
     ]
   },
   "home": {
