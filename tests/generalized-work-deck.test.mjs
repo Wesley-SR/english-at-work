@@ -9,13 +9,13 @@ const removedIds=Array.from({length:28},(_,i)=>21+i);
 const expectedActiveIds=[
   ...Array.from({length:20},(_,i)=>i+1),
   ...Array.from({length:19},(_,i)=>i+49),
-  ...Array.from({length:7},(_,i)=>i+68)
+  ...Array.from({length:17},(_,i)=>i+68)
 ];
 
-test('Work IDs are stable, removed 21–48 are not reused, and seven additions use 68–74',()=>{
+test('Work IDs are stable, removed 21–48 are not reused, and additions use 68–84',()=>{
   const ids=workCards.map(card=>card.id);
   assert.deepEqual(ids,expectedActiveIds);
-  assert.equal(ids.length,46);
+  assert.equal(ids.length,56);
   assert.equal(new Set(ids).size,46);
   assert.ok(ids.every(id=>!removedIds.includes(id)));
   assert.equal(homeCards.length,15);
@@ -31,7 +31,28 @@ test('general-purpose cards have correct translations',()=>{
     ['We still need to validate this point.','Ainda precisamos validar esse ponto.'],
     ["That's all I wanted to cover for now.",'Era só isso que eu queria abordar por enquanto.'],
   ];
-  assert.deepEqual(workCards.filter(card=>card.id>=68).map(card=>[card.en,card.pt]),expected);
+  assert.deepEqual(workCards.filter(card=>card.id>=68&&card.id<=74).map(card=>[card.en,card.pt]),expected);
+});
+
+
+test('ten colleague questions are correct, distinct, and use never-before-assigned IDs',()=>{
+  const requested=[
+    ['Could you walk me through this part?','Você poderia me explicar esta parte passo a passo?'],
+    ['Do you happen to know where I can find this information?','Por acaso você sabe onde posso encontrar esta informação?'],
+    ['What do you think about this approach?','O que você acha desta abordagem?'],
+    ['Would you recommend doing it differently?','Você recomendaria fazer isso de outra maneira?'],
+    ['Have you dealt with something similar before?','Você já lidou com algo parecido antes?'],
+    ['Do you have any idea what might be causing this?','Você tem alguma ideia do que pode estar causando isso?'],
+    ['Would it make sense to test this before moving forward?','Faria sentido testar isso antes de prosseguir?'],
+    ['Is there anything else we should consider?','Há mais alguma coisa que deveríamos considerar?'],
+    ['Have you had a chance to look into this?','Você teve a oportunidade de verificar isso?'],
+    ['Would you mind taking a quick look at my changes?','Você se importaria de dar uma olhada rápida nas minhas alterações?']
+  ];
+  assert.deepEqual(workCards.filter(c=>c.id>=75&&c.id<=84).map(c=>[c.en,c.pt]),requested);
+  const key=s=>s.normalize('NFKC').toLowerCase().replace(/[’‘]/g,"'")
+    .trim().replace(/[.!?]+$/,'').replace(/\s+/g,' ');
+  assert.equal(new Set(workCards.map(c=>key(c.en))).size,workCards.length,'no duplicate sentences');
+  assert.ok(workCards.filter(c=>c.id>=75).every(c=>c.id<=84));
 });
 
 test('only active IDs are supplied to Difficult words, unchanged Home deck retained',()=>{
