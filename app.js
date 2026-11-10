@@ -105,11 +105,11 @@ function updateVoiceOptions(){
   select.value=voiceChoice;
   hint.textContent=voiceChoice==='device'
     ? 'Uses your browser voices; the voice may be female.'
-    : 'British male recording. No device voice installation required.';
+    : 'Built-in phrases use British male recordings. Personal phrases use the device voice.';
 }
 function speakDevice(sentence, rate=.85){
   if(!('speechSynthesis' in window)){
-    alert('Your browser does not support device speech. Choose Ryan or Thomas in the menu.');
+    alert('Device speech is not supported in this browser. Personal phrases need device speech synthesis.');
     return;
   }
   const utterance=new SpeechSynthesisUtterance(sentence);
