@@ -166,38 +166,40 @@ footer{color:#8997a9}
 
 
 /* Optional difficult-word drill, shown only after English text is revealed. */
-.difficult-words{
+.word-practice{
   margin:2px 0 19px;
   padding:14px 15px;
   border:1px solid #3b4859;
   border-radius:12px;
   background:#1e2734;
 }
-.difficult-words-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
-.difficult-words h2{font-size:14px;font-weight:600;color:#cbd5e1;margin:0 0 5px;}
-.difficult-words-header p{font-size:11px;line-height:1.45;color:#9eacc0;margin:0;}
+.word-practice-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
+.word-practice h2{font-size:14px;font-weight:600;color:#cbd5e1;margin:0 0 5px;}
+.word-practice-header p{font-size:11px;line-height:1.45;color:#9eacc0;margin:0;}
 .words-speed{font-size:10px;color:#9eacc0;display:flex;align-items:center;gap:6px;white-space:nowrap;}
 .words-speed select{background:#252e3c;border:1px solid #485263;color:#d8e0ec;border-radius:7px;font:inherit;padding:7px;max-width:100px;}
 .words-speed select:focus-visible{outline:2px solid #8397ad;}
-.difficult-words-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:15px;}
+.word-practice-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:15px;}
 .word-audio-button{background:#263549;border-color:#4e617b;color:#dae6f7;border-radius:9px;font-size:13px;padding:10px 13px;line-height:1.3;}
 .word-audio-button:hover,.word-audio-button:focus-visible{background:#32445d;}
 .word-audio-status{font-size:11px;color:#aebcd0;min-height:0;margin:10px 0 0;line-height:1.4;}
 .word-audio-status:empty{display:none;}
 @media(max-width:540px){
-  .difficult-words{padding:12px;}
-  .difficult-words-header{flex-wrap:wrap;}
+  .word-practice{padding:12px;}
+  .word-practice-header{flex-wrap:wrap;}
   .words-speed{margin-top:2px;}
   .word-audio-button{font-size:12px;min-height:42px;}
 }
 
 
-/* Switch between curated and full phrase word-by-word listening. */
-.word-mode-switch{display:flex;gap:7px;flex-wrap:wrap;margin-top:13px;}
-.word-mode-switch button{padding:8px 12px;font-size:12px;border-radius:8px;color:#a6b5c9;}
-.word-mode-switch button.active{background:#3b516d;color:#e3ecfb;border-color:#7a95b7;}
-.word-mode-switch button[aria-pressed="true"]{font-weight:600;}
+/* The word list is expanded by default after revealing English; one control
+   collapses or expands the whole list, including its playback-speed option. */
+.word-practice-header{align-items:center;}
+#words-toggle{font-size:12px;padding:9px 12px;white-space:nowrap;border-color:#607086;color:#d9e4f4;flex:0 0 auto;}
+#words-toggle:hover,#words-toggle:focus-visible{background:#34445a;}
+#word-practice-content{margin-top:10px;}
+.word-practice .words-speed{justify-content:flex-end;}
+.word-practice-list{margin-top:12px;}
 @media(max-width:540px){
-  .word-mode-switch{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
-  .word-mode-switch button{font-size:11px;padding:9px 7px;}
+  #words-toggle{font-size:11px;padding:9px 10px;}
 }

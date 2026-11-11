@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#12192c"><meta name="description" content="Personal review workspace.">
-<title>Review Panel</title><link rel="manifest" href="./manifest.webmanifest"><link rel="stylesheet" href="./style.css?v=20261105-all-words">
+<title>Review Panel</title><link rel="manifest" href="./manifest.webmanifest"><link rel="stylesheet" href="./style.css?v=20261111-toggle-words">
 </head>
 <body><main class="app">
 <section id="choose" class="home-screen">
@@ -37,25 +37,24 @@
     <div id="answer" hidden><div id="sentence"></div><div id="translation" hidden><small>TRANSLATION</small><p id="portuguese"></p></div></div>
   </div>
   <div class="listen-row"><button id="audio" class="primary">🔊 Play audio</button><span>Playback on demand</span></div>
-  <section id="difficult-words" class="difficult-words" hidden aria-label="Difficult words">
-    <div class="difficult-words-header">
+  <section id="word-practice" class="word-practice" hidden aria-label="Individual word listening">
+    <div class="word-practice-header">
       <div>
         <h2>Word practice</h2>
-        <p>Listen to words individually. Tap again to repeat.</p>
+        <p>Tap any word to hear it separately. Tap again to repeat.</p>
       </div>
+      <button id="words-toggle" type="button" aria-expanded="true" aria-controls="word-practice-content">Hide words</button>
+    </div>
+    <div id="word-practice-content">
       <label class="words-speed" for="words-speed">Speed
-        <select id="words-speed" aria-label="Difficult words playback speed">
+        <select id="words-speed" aria-label="Word playback speed">
           <option value="1">Normal</option>
           <option value="0.8">Slow</option>
         </select>
       </label>
+      <div id="word-practice-list" class="word-practice-list"></div>
+      <p id="word-audio-status" class="word-audio-status" role="status" aria-live="polite"></p>
     </div>
-    <div class="word-mode-switch" role="group" aria-label="Which words to practise">
-      <button type="button" class="active" id="word-mode-difficult" aria-pressed="true">Difficult words</button>
-      <button type="button" id="word-mode-all" aria-pressed="false">All words</button>
-    </div>
-    <div id="difficult-words-list" class="difficult-words-list"></div>
-    <p id="word-audio-status" class="word-audio-status" role="status" aria-live="polite"></p>
   </section>
   <section id="speaking-practice" class="speaking-practice" aria-labelledby="speaking-heading">
     <div class="speaking-top">
@@ -86,4 +85,4 @@
 <div id="empty" hidden><h2>Up to date</h2><p>No pending items. Select All items to browse.</p></div>
 </section>
 <footer>Progress stored locally. Audio plays on request.</footer>
-</main><script type="module" src="./app.js?v=20261110-colleague-questions"></script></body></html>
+</main><script type="module" src="./app.js?v=20261111-toggle-words"></script></body></html>
