@@ -9,6 +9,7 @@ on:
       - fix/audio-leading-silence
       - feature/generalize-freeze-lambda
       - feature/work-colleague-questions
+      - feature/toggle-all-words
   pull_request:
     paths:
       - 'speaking.mjs'
@@ -22,6 +23,7 @@ on:
       - 'tests/generalized-work-deck.test.mjs'
       - 'word-utils.mjs'
       - 'tests/word-utils.test.mjs'
+      - 'tests/word-practice-ui.test.mjs'
       - 'scripts/generate_audio.py'
       - 'tests/practice-words.test.mjs'
       - 'index.html'
