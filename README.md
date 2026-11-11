@@ -4,7 +4,7 @@
 
 The **Work** deck now has **56 active cards**: 46 unchanged existing cards and ten new questions with stable IDs **75–84**. The new material covers asking for help, requesting opinions, discussing technical issues, and coordinating work. **Home remains unchanged at 15 cards.**
 
-Each new question has a Portuguese translation, curated Difficult words, All words practice, and pre-generated Ryan and Thomas British male MP3s using the existing 450 ms lead-in. The audio builder reuses recordings across phrases where possible.
+Each new question has a Portuguese translation, an expandable list of every word for individual listening, and pre-generated Ryan and Thomas British male MP3s using the existing 450 ms lead-in. The audio builder reuses recordings across phrases where possible.
 
 All previously assigned IDs (including retired IDs 21–48) stay reserved; original Work cards and ratings retain their IDs. Both review history keys remain `english-at-work-progress-v1` and `english-at-home-progress-v1`. This update does not clear, migrate, or overwrite review data.
 
@@ -14,7 +14,7 @@ The **Work** collection contains **46 active cards**, **39 retained** from the p
 
 This deck update preserves the existing spaced-review keys (`english-at-work-progress-v1` and `english-at-home-progress-v1`) and does not clear or migrate browser localStorage. Reviews for retained card IDs are preserved; previous review entries for inactive IDs can remain in browser storage but are not displayed. The Git history and original phrase versions remain available for rollback.
 
-The seven new phrases have prerecorded Ryan/Thomas MP3s, the same 450 ms silent lead-in as the rest of the deck, and Difficult words / All words selections.
+The seven new phrases have prerecorded Ryan/Thomas MP3s, the same 450 ms silent lead-in as the rest of the deck, and individual playback of every word.
 
 ## Audio reliability — first syllable
 
@@ -26,26 +26,15 @@ This reduces device-related startup clipping, but cannot guarantee that every ou
 
 A discreet, audio-first flashcard trainer with Work and Home collections. Listen with pre-generated British male recordings (Ryan or Thomas), optionally type an answer, reveal the English and Portuguese text, and grade a card for spaced review.
 
-## All words — word-by-word listening
+## Word practice — listen to any word
 
-After revealing a flashcard with **Show text**, choose between **Difficult words** (the original curated suggestions) and **All words**. All words renders each word of the current sentence in order—including repeated words and contractions—with a play button. Tap as often as needed and choose Normal or Slow playback.
+The study view stays **audio-first** until **Show text** is clicked. After English text is revealed, the complete list of words from the current sentence appears immediately, in order, including repetitions and contractions. Each word has its own repeatable play button.
 
-- Isolated recordings are pre-generated for every distinct word across Work and Home, in the selected Ryan/Thomas British male voice. Shared words reuse the same recording.
-- Contractions such as `I'll` and `haven't` are played as individual spoken words.
-- Switching modes does not affect the flashcard's spaced-review schedule or history.
-- Existing two-stage Clear history protection remains unchanged.
-
-## Difficult words — isolated British audio
-
-When an English flashcard is revealed with **Show text**, a compact **Difficult words** panel suggests one to three challenging words from that card. Tap a word to hear it alone, tap it again to repeat, or choose **Slow** (0.8×) to practise pronunciation more carefully.
-
-- The highlighted word list is curated per card in `practice-words.js`, not estimated from the user's speech.
-- The word recordings use the **same selected British male voice** (Ryan or Thomas) as full sentences. Each word MP3 is reused across cards and decks.
-- Existing review answers, grades, sentence audio, and the microphone practice flow are unchanged.
-- The panel appears **only after revealing the English text**, so it does not spoil audio-first recall.
-- No microphone access or network API call is needed for isolated word playback: all generated MP3s are static site assets.
-- The browser's device-voice option is also supported. If a word recording cannot be loaded, the app explains the issue and tries device speech synthesis.
-- Existing progress keys and the double confirmation for Clear history are preserved.
+- There are no longer separate **Difficult words** or **All words** tabs.
+- One accessible **Hide words / Show words** button collapses or expands the entire word list and speed selector. Each new card starts with the list expanded after revealing English.
+- **Normal / Slow** word playback remains available. Recordings use the selected Ryan or Thomas British male voice (or device voice when selected).
+- Existing word recordings and curated metadata may remain in the repository as assets, but the app displays **every** word, not a selection.
+- The review history, grading schedule, Speaking Practice, audio-first behavior and double-confirmation Clear history guard are unchanged.
 
 ## Experimental Speaking Practice branch
 
