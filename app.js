@@ -1,6 +1,5 @@
 import {cards as workCards} from './data.js?v=20261110-56';
 import {homeCards} from './home-data.js';
-import {practiceWords} from './practice-words.js?v=20261110-colleague-questions';
 import {sentenceWords,wordAudioSlug} from './word-utils.mjs?v=20261105-all-words';
 import {compareSpeech} from './speaking.mjs?v=20261102-speaking-free';
 import {confirmHistoryClear} from './history-guard.mjs?v=20261102-history-guard';
@@ -27,8 +26,11 @@ function show(){
   stopAudio();
   stopRecognition();
   resetSpeaking();
-  $('difficult-words').hidden = true;
-  $('difficult-words-list').replaceChildren();
+  $('word-practice').hidden = true;
+  $('word-practice-content').hidden = false;
+  $('words-toggle').textContent = 'Hide words';
+  $('words-toggle').setAttribute('aria-expanded', 'true');
+  $('word-practice-list').replaceChildren();
   $('word-audio-status').textContent = '';
   const c=queue[idx];
   $('count').textContent=context.cards.filter(due).length+' pending';
@@ -52,13 +54,14 @@ function show(){
 }
 function showEnglish(){
   if(!queue[idx])return;
+  const firstReveal = reveal === 0;
   reveal=Math.max(reveal,1);
   $('language').textContent='TEXT';
   $('hidden-prompt').hidden=true;
   $('answer').hidden=false;
   $('ratings').hidden=false;
   $('show-english').disabled=true;
-  showDifficultWords();
+  if(firstReveal)showAllWords();
 }
 function showPortuguese(){
   if(!queue[idx])return;
@@ -124,11 +127,8 @@ function speak(){
   player.play().catch(fail);
 }
 
-// The word choices are curated for each card, not based on a pronunciation
-// assessment. Recordings use the currently selected Ryan / Thomas voice.
-let wordMode = 'difficult';
-
-function playDifficultWord(word) {
+// All words appear when the English text is revealed. No curated-word tabs.
+function playIsolatedWord(word) {
   if (!queue[idx] || reveal < 1 || !context) return;
   const status = $('word-audio-status');
   const rate = Number($('words-speed').value) || 1;
@@ -159,43 +159,41 @@ function playDifficultWord(word) {
   player.play().catch(fail);
 }
 
-function showDifficultWords() {
+function showAllWords() {
   const card = queue[idx];
   if (!card || !context || reveal < 1) return;
-  const collection = context === contexts.work ? 'work' : 'home';
-  const words = wordMode === 'all'
-    ? sentenceWords(card.en).map(token => token.text)
-    : (practiceWords[collection]?.[String(card.id)] || []);
-  const section = $('difficult-words');
-  const list = $('difficult-words-list');
+  const words = sentenceWords(card.en).map(token => token.text);
+  const section = $('word-practice');
+  const list = $('word-practice-list');
   list.replaceChildren();
   $('word-audio-status').textContent = '';
   section.hidden = words.length === 0;
-  for (const mode of ['difficult','all']) {
-    const button = $('word-mode-' + mode);
-    const active = wordMode === mode;
-    button.classList.toggle('active', active);
-    button.setAttribute('aria-pressed', String(active));
-  }
+  $('word-practice-content').hidden = false;
+  $('words-toggle').textContent = 'Hide words';
+  $('words-toggle').setAttribute('aria-expanded', 'true');
   for (const word of words) {
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'word-audio-button';
     button.textContent = '🔊 ' + word;
     button.setAttribute('aria-label', 'Play isolated word: ' + word);
-    button.addEventListener('click', () => playDifficultWord(word));
+    button.addEventListener('click', () => playIsolatedWord(word));
     list.appendChild(button);
   }
 }
 
-for (const mode of ['difficult','all']) {
-  $('word-mode-' + mode).addEventListener('click', () => {
-    if (wordMode === mode) return;
-    wordMode = mode;
+$('words-toggle').addEventListener('click', () => {
+  if (!queue[idx] || reveal < 1) return;
+  const panel = $('word-practice-content');
+  const show = panel.hidden;
+  panel.hidden = !show;
+  $('words-toggle').textContent = show ? 'Hide words' : 'Show words';
+  $('words-toggle').setAttribute('aria-expanded', String(show));
+  if (!show) {
     stopAudio();
-    showDifficultWords();
-  });
-}
+    $('word-audio-status').textContent = '';
+  }
+});
 
 // Free speaking practice: the browser may use a cloud speech recognition service.
 // This compares the transcript to the card; it cannot assess individual phonemes.
